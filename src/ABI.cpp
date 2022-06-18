@@ -13,6 +13,7 @@ void* syscall_handler(struct FunctionParameters params){
 }
 
 extern "C" void ecall(){
+    //dodavanje 4 na sepc jer ecall pamti adresu sa koje je pozvan a ne sledecu instrukciju
     //uint64 save_pc = Riscv::r_sepc();
     //save_pc = save_pc + 4;
     //Riscv::w_sepc(save_pc);

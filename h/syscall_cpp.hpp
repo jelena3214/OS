@@ -10,21 +10,8 @@
 #include "syscall_c.hpp"
 #include "../lib/hw.h"
 
-class MemoryAllocator{
-private:
-    MemoryAllocator() = default;
-    static MemoryAllocator* instance;
-public:
-    static void* operator new(size_t size);
-    static void operator delete(void* memoryBlock);
-    static MemoryAllocator* getInstance(){
-        if(instance == nullptr){
-            instance = new MemoryAllocator();
-        }
-        return instance;
-    }
-
-};
+void* ::operator new (size_t);
+void ::operator delete (void*);
 
 /*class Thread {
         public:
