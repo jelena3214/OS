@@ -2,8 +2,8 @@
 // Created by os on 5/23/22.
 //
 
-#include "../h/syscall_c.h"
-#include "../h/ABI.h"
+#include "../h/syscall_c.hpp"
+#include "../h/ABI.hpp"
 //TODO vidi kako ces da vratis
 void* mem_alloc (size_t size){
     struct FunctionParameters param;

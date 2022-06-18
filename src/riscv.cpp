@@ -3,7 +3,7 @@
 //
 
 #include "../h/riscv.hpp"
-#include "../lib/console.h"
+
 
 void Riscv::popSppSpie()
 {
