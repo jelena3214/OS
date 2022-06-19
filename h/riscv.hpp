@@ -6,6 +6,7 @@
 #define PROJECT_BASE_RISCV_HPP
 
 #include "../lib/hw.h"
+#include "../h/MemoryAllocator.hpp"
 
 class Riscv{
 public:
@@ -82,10 +83,9 @@ public:
     static void w_sstatus(uint64 sstatus);
 
     // supervisor trap
-    //static void supervisorTrap();
+    static void supervisorTrap();
 
 private:
-
     // supervisor trap handler
     static void handleSupervisorTrap();
 

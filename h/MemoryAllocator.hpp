@@ -20,17 +20,24 @@ public:
         size_t numOfBlocks;
     };
 private:
-    MemoryAllocator() = default;
-    static MemoryAllocator instance;
+    MemoryAllocator(){
+        //freeMemHead->prev = freeMemHead->next = nullptr;
+        //freeMemHead->numOfBlocks = ((char*)HEAP_END_ADDR - (char*)HEAP_START_ADDR)/MEM_BLOCK_SIZE;
+    }
     static FreeMem* freeMemHead;
     static MemBlock* allocatedMemHead;
+
+    void updateMemBlocks(void* del);
 public:
-
-
-
     static MemoryAllocator& getInstance(){
+        static MemoryAllocator instance;
         return instance;
     }
+    MemoryAllocator(MemoryAllocator const& ) = delete;
+    void operator=(MemoryAllocator const&) = delete;
+    //size number of blocks
+    void* allocate(size_t size);
+    void deallocate(void *block);
 };
 
 using FreeMem = MemoryAllocator::FreeMem;

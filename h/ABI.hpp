@@ -8,12 +8,10 @@
 #include "../h/riscv.hpp"
 #include "../lib/console.h"
 struct FunctionParameters{
-    size_t code;
-    void* first;
+    uint64 code;
+    size_t first;
 };
 
 void* syscall_handler(struct FunctionParameters params);
-
-extern "C" void ecall();
 
 #endif //PROJECT_BASE_ABI_HPP
