@@ -88,7 +88,7 @@ public:
 private:
     // supervisor trap handler
     static void handleSupervisorTrap();
-
+    //static MemoryAllocator* memoryAllocator;
 };
 
 inline uint64 Riscv::r_scause()

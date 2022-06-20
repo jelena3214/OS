@@ -3,18 +3,19 @@
 //
 
 #include "../h/MemoryAllocator.hpp"
-#include "../lib/console.h"
-
-FreeMem* MemoryAllocator::freeMemHead = (FreeMem*)HEAP_START_ADDR;
-MemBlock* MemoryAllocator::allocatedMemHead = nullptr;
+MemoryAllocator* MemoryAllocator::instance = nullptr;
 
 
 void *MemoryAllocator::allocate(size_t size) {
     //uint64 p = (uint64)(freeMemHead);
+    //printInteger((uint64)freeMemHead);
     if(freeMemHead == nullptr){
-        __putc('a');
+        printString("Nema slobodnog prostora\n");
         return nullptr; //no free space anymore
     }
+    printString("Broj freeMemHead slobodnih blokova: \n");
+    printInteger((uint64)(freeMemHead->numOfBlocks));
+    __putc('\n');
     for(FreeMem* cur = freeMemHead; cur != nullptr; cur = cur->next){
         if(cur->numOfBlocks >= size){
             size_t execBlocks = cur->numOfBlocks - size;
@@ -45,9 +46,15 @@ void *MemoryAllocator::allocate(size_t size) {
     return nullptr; //if there is not any fitting block
 }
 
-void MemoryAllocator::deallocate(void *block) {
+int MemoryAllocator::deallocate(void *block) {
     MemBlock* del = (MemBlock*)block;
     FreeMem* cur = nullptr;
+    printString("Adresa alociranog bloka: \n");
+    printInteger((uint64)allocatedMemHead);
+    __putc('\n');
+    if(!allocatedMemHead){
+        return 0;
+    }
     if(!freeMemHead || (char*)block < (char*)freeMemHead){
         cur = 0;
     }else{
@@ -62,7 +69,7 @@ void MemoryAllocator::deallocate(void *block) {
             if(cur->next)cur->next->prev = cur;
         }
         updateMemBlocks(block);
-        return;
+        return 1;
     }else{
         FreeMem* nextSegment = cur?cur->next:freeMemHead;
         if(nextSegment && (char*)block + del->numOfBlocks*MEM_BLOCK_SIZE == (char*)nextSegment){
@@ -74,7 +81,7 @@ void MemoryAllocator::deallocate(void *block) {
             if(nextSegment->prev)nextSegment->prev->next = newSegment;
             else freeMemHead = newSegment;
             updateMemBlocks(block);
-            return;
+            return 1;
         }
     }
 
@@ -86,6 +93,7 @@ void MemoryAllocator::deallocate(void *block) {
     if(newSegment->next)newSegment->next->prev = newSegment;
     if(cur)cur->next = newSegment;
     else freeMemHead = newSegment;
+    return 1;
 }
 
 void MemoryAllocator::updateMemBlocks(void *del) {
