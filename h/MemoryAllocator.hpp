@@ -45,6 +45,8 @@ public:
     }
     void* allocate(size_t size);
     int deallocate(void *block);
+    MemoryAllocator(const MemoryAllocator&) = delete;
+    MemoryAllocator& operator=(MemoryAllocator) = delete;
 };
 
 using Block = MemoryAllocator::Block;
