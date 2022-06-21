@@ -31,13 +31,40 @@ int main(){
     __putc('\n');
 
 
-    MemoryAllocator* mem = MemoryAllocator::getInstance();
+    MemoryAllocator mem = MemoryAllocator::getInstance();
 
-    int n = 16;
-    char** matrix = (char**)mem->allocate(n*sizeof(char*));
+    int velicinaZaglavlja = sizeof(Block); // meni je ovoliko
+
+    const size_t maxMemorija = (((size_t)HEAP_END_ADDR - (size_t)HEAP_START_ADDR - velicinaZaglavlja)/MEM_BLOCK_SIZE )*MEM_BLOCK_SIZE ;
+    char* niz = (char*)mem.allocate(maxMemorija); // celokupan prostor
+    if(niz == nullptr) {
+        __putc('?');
+    }
+
+    int n = 10;
+    char* niz2 = (char*)mem.allocate(n*sizeof(char));
+    if(niz2 == nullptr) {
+        __putc('k');
+    }
+
+    int status = mem.deallocate(niz);
+    if(status == 0) {
+        __putc('?');
+    }
+    niz2 = (char*)mem.allocate(n*sizeof(char));
+    if(niz2 == nullptr) {
+        __putc('?');
+    }
+    mem.deallocate(niz2);
+    mem.ispisFree();
+    return 0;
+
+
+    /*int n = 16;
+    char** matrix = (char**)mem.allocate(n*sizeof(char*));
     checkNullptr(matrix);
     for(int i = 0; i < n; i++) {
-        matrix[i] = (char *) mem->allocate(n * sizeof(char));
+        matrix[i] = (char *) mem.allocate(n * sizeof(char));
         checkNullptr(matrix[i]);
     }
 
@@ -57,19 +84,19 @@ int main(){
 
 
     for(int i = 0; i < n; i++) {
-        int status = mem->deallocate(matrix[i]);
+        int status = mem.deallocate(matrix[i]);
         checkStatus(status);
     }
-    int status = mem->deallocate(matrix);
+    int status = mem.deallocate(matrix);
     checkStatus(status);
 
-    mem->ispisFree();
+    mem.ispisFree();
 
     return 0;
 
 
 
-    /*size_t velicinaZaglavlja = sizeof(Block); // meni je ovoliko
+    size_t velicinaZaglavlja = sizeof(Block); // meni je ovoliko
     size_t instanceSize = (sizeof(MemoryAllocator) + velicinaZaglavlja)/MEM_BLOCK_SIZE + ((sizeof(MemoryAllocator) + velicinaZaglavlja)%MEM_BLOCK_SIZE == 0?0:1);
 
     const size_t maxMemorija = ((size_t)HEAP_END_ADDR - ((size_t)HEAP_START_ADDR  + (size_t)instanceSize*MEM_BLOCK_SIZE) - velicinaZaglavlja);

@@ -7,7 +7,7 @@
 //MemoryAllocator* Riscv::memoryAllocator = MemoryAllocator::getInstance();
 
 void Riscv::handleSupervisorTrap(){
-    static MemoryAllocator* mA = MemoryAllocator::getInstance();
+
     uint64 scause = Riscv::r_scause();
     if (scause == 0x0000000000000008UL || scause == 0x0000000000000009UL)
     {
@@ -19,7 +19,7 @@ void Riscv::handleSupervisorTrap(){
         asm("mv %[ime], x11" : [ime] "=r"(param1));
         switch(code){
             case 0x01:
-                mA->allocate((size_t)param1);
+                //mA->allocate((size_t)param1);
                 __putc('J');
                 break;
         }

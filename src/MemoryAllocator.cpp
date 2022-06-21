@@ -3,7 +3,6 @@
 //
 
 #include "../h/MemoryAllocator.hpp"
-MemoryAllocator* MemoryAllocator::instance = nullptr;
 
 //size neka bude u bajtovima
 void *MemoryAllocator::allocate(size_t size) {
@@ -62,8 +61,8 @@ void *MemoryAllocator::allocate(size_t size) {
 
 int MemoryAllocator::deallocate(void *block) {
     Block* cur = nullptr;
-    size_t startAddr = (size_t)HEAP_START_ADDR + ((sizeof(MemoryAllocator) + headerSize)/MEM_BLOCK_SIZE + ((sizeof(MemoryAllocator) + headerSize)%MEM_BLOCK_SIZE == 0?0:1)) * MEM_BLOCK_SIZE;
-    if(!allocatedMemHead || ((size_t)block < startAddr || (size_t)block > (size_t)HEAP_END_ADDR) ){
+    size_t startAddr = (size_t)HEAP_START_ADDR;
+    if(!allocatedMemHead || ((size_t)block-headerSize < startAddr || (size_t)block - headerSize > (size_t)HEAP_END_ADDR) ){
         return 0;
     }
 
