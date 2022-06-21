@@ -33,10 +33,17 @@ private:
         instance->freeMemHead = reinterpret_cast<Block *>((char*)newB + (size_t)(newB->numOfBlocks * MEM_BLOCK_SIZE));
         instance->freeMemHead->prev = instance->freeMemHead->next = nullptr;
         instance->freeMemHead->numOfBlocks = (size_t)((size_t)HEAP_END_ADDR - (size_t)HEAP_START_ADDR - newB->numOfBlocks*MEM_BLOCK_SIZE)/MEM_BLOCK_SIZE;
+        printString("");
+        printInteger((size_t)(size_t)HEAP_END_ADDR - (size_t)HEAP_START_ADDR - (size_t)newB->numOfBlocks*MEM_BLOCK_SIZE);
+        __putc('\n');
         instance->allocatedMemHead = nullptr;
     }
     void updateMemBlocks(void* del);
+    void joinFreeSpace();
+
 public:
+    void ispisAlloc();
+    void ispisFree();
     static MemoryAllocator* getInstance(){
         if(instance == nullptr){
             initialize();

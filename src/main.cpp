@@ -8,7 +8,7 @@
 void checkNullptr(void* p) {
     static int x = 0;
     if(p == nullptr) {
-        __putc('?');
+        __putc('x');
         __putc('0' + x);
     }
     x++;
@@ -16,9 +16,9 @@ void checkNullptr(void* p) {
 
 void checkStatus(int status) {
     static int y = 0;
-    if(status) {
+    if(status == 0) {
         __putc('0' + y);
-        __putc('?');
+        __putc('y');
     }
     y++;
 }
@@ -33,27 +33,37 @@ int main(){
 
     MemoryAllocator* mem = MemoryAllocator::getInstance();
 
-    size_t velicinaZaglavlja = sizeof(Block); // meni je ovoliko
-    size_t instanceSize = (sizeof(MemoryAllocator) + velicinaZaglavlja)/MEM_BLOCK_SIZE + ((sizeof(MemoryAllocator) + velicinaZaglavlja)%MEM_BLOCK_SIZE == 0?0:1);
+    int n = 16;
+    char** matrix = (char**)mem->allocate(n*sizeof(char*));
+    checkNullptr(matrix);
+    for(int i = 0; i < n; i++) {
+        matrix[i] = (char *) mem->allocate(n * sizeof(char));
+        checkNullptr(matrix[i]);
+    }
 
-    const size_t maxMemorija = ((size_t)HEAP_END_ADDR - ((size_t)HEAP_START_ADDR  + (size_t)instanceSize*MEM_BLOCK_SIZE) - velicinaZaglavlja);
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            matrix[i][j] = 'k';
+        }
+    }
 
-    int *p1 = (int*)mem->allocate(15*sizeof(int)); // trebalo bi da predje jedan blok od 64
-    checkNullptr(p1);
-    int *p2 = (int*)mem->allocate(30*sizeof(int));
-    checkNullptr(p2);
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            __putc(matrix[i][j]);
+            __putc(' ');
+        }
+        __putc('\n');
+    }
 
-    int *p3 = (int*)mem->allocate(30*sizeof(int));
-    checkNullptr(p3);
 
-    checkStatus(mem->deallocate(p1));
-    checkStatus(mem->deallocate(p3));
-    checkStatus(mem->deallocate(p2)); // p2 treba da se spoji sa p1 i p3
+    for(int i = 0; i < n; i++) {
+        int status = mem->deallocate(matrix[i]);
+        checkStatus(status);
+    }
+    int status = mem->deallocate(matrix);
+    checkStatus(status);
 
-    int *celaMemorija = (int*)mem->allocate(maxMemorija);
-    checkNullptr(celaMemorija);
-
-    checkStatus(mem->deallocate(celaMemorija));
+    mem->ispisFree();
 
     return 0;
 
