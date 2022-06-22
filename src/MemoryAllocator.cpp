@@ -45,10 +45,11 @@ void *MemoryAllocator::allocate(size_t size) {
             newMemBlock->numOfBlocks = blockNum;
             if(allocatedMemHead){
                 Block* p = allocatedMemHead;
-                for( ;p->next != nullptr; p = p->next);
-                p->next = newMemBlock;
+                for( ;p->next && (char*)p->next < (char*)newMemBlock; p = p->next);
+                newMemBlock->next = p->next;
                 newMemBlock->prev = p;
-                newMemBlock->next = nullptr;
+                if(p->next)p->next->prev = newMemBlock;
+                p->next = newMemBlock;
             }else {
                 allocatedMemHead = newMemBlock;
                 allocatedMemHead->prev = allocatedMemHead->next = nullptr;

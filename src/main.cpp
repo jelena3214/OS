@@ -34,7 +34,6 @@ int main() {
     //__asm__ volatile("ecall");
     __putc('f');
     __putc('\n');
-
     int *x = reinterpret_cast<int*>(mem_alloc(sizeof(int)));//static_cast<int *>(operator new(sizeof(int)));
     *x = 5;
     printString("MAIN \n");
