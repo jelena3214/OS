@@ -5,6 +5,26 @@
 #include "../h/MemoryAllocator.hpp"
 #include "../h/syscall_cpp.hpp"
 
+void checkNullptr(void* p) {
+    static int x = 0;
+    if(p == nullptr) {
+        __putc('?');
+        __putc('0' + x);
+    }
+    x++;
+}
+
+void checkStatus(int status) {
+    static int y = 0;
+    if(status == 0) {
+        __putc('0' + y);
+        __putc('?');
+    }
+    y++;
+}
+
+
+
 int main() {
     Riscv::w_stvec(reinterpret_cast<uint64>(&Riscv::supervisorTrap)); //init za adresu prekidne rutine
 
@@ -15,12 +35,11 @@ int main() {
     __putc('f');
     __putc('\n');
 
-
-    int *x = static_cast<int *>(operator new(sizeof(int)));
+    int *x = reinterpret_cast<int*>(mem_alloc(sizeof(int)));//static_cast<int *>(operator new(sizeof(int)));
     *x = 5;
     printString("MAIN \n");
     printInteger((uint64)*x);
-    operator delete(x);
+    mem_free(x);
     return 0;
 
 }

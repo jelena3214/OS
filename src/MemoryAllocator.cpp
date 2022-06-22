@@ -59,69 +59,6 @@ void *MemoryAllocator::allocate(size_t size) {
     return nullptr; //if there is not any fitting block
 }
 
-int MemoryAllocator::deallocate(void *block) {
-    Block* cur = nullptr;
-    size_t startAddr = (size_t)HEAP_START_ADDR;
-    if(!allocatedMemHead || ((size_t)block-headerSize < startAddr || (size_t)block - headerSize > (size_t)HEAP_END_ADDR) ){
-        return 0;
-    }
-
-    Block* del = (Block*)((char*)block - headerSize);
-    if(!freeMemHead || (char*)block - headerSize < (char*)freeMemHead){
-        cur = 0;
-    }else{
-        for(cur = freeMemHead; cur->next && (char*)block - headerSize > (char*)cur->next; cur = cur->next);
-    }
-    updateMemBlocks((char*)block - headerSize);
-
-    if(cur && (char*)cur+cur->numOfBlocks*MEM_BLOCK_SIZE == ((char*)block - headerSize)){
-        cur->numOfBlocks += del->numOfBlocks;
-        printString("BROJ UVECAN: ");
-        printInteger(cur->numOfBlocks);
-        __putc('\n');
-        if(cur->next && (char*)cur+cur->numOfBlocks*MEM_BLOCK_SIZE == (char*)cur->next){
-            cur->numOfBlocks += cur->next->numOfBlocks;
-            cur->next = cur->next->next;
-            if(cur->next)cur->next->prev = cur;
-            printString("USAO U OVO\n");
-        }
-        printString("BROJ OSLOBODJENIH: ");
-        printInteger(del->numOfBlocks);
-        __putc('\n');
-        joinFreeSpace();
-        return 1;
-    }else{
-        Block* nextSegment = cur?cur->next:freeMemHead;
-        if(nextSegment && (char*)block + del->numOfBlocks*MEM_BLOCK_SIZE == (char*)nextSegment){
-            Block* newSegment = (Block*)((char*)block - headerSize);
-            newSegment->numOfBlocks = nextSegment->numOfBlocks + del->numOfBlocks;
-            newSegment->prev = nextSegment->prev;
-            newSegment->next = nextSegment->next;
-            if(nextSegment->next)nextSegment->next->prev = newSegment;
-            if(nextSegment->prev)nextSegment->prev->next = newSegment;
-            else freeMemHead = newSegment;
-            printString("OVDE JE\n");
-            printString("BROJ OSLOBODJENIH: ");
-            printInteger(newSegment->numOfBlocks);
-            __putc('\n');
-            joinFreeSpace();
-            return 1;
-        }
-    }
-    Block* newSegment = (Block*)((char*)block - headerSize);
-    newSegment->numOfBlocks = del->numOfBlocks;
-    printString("BROJ OSLOBODJENIH: ");
-    printInteger(newSegment->numOfBlocks);
-    __putc('\n');
-    newSegment->prev = cur;
-    if(cur)newSegment->next = cur->next;
-    else newSegment->next = freeMemHead;
-    if(newSegment->next)newSegment->next->prev = newSegment;
-    if(cur)cur->next = newSegment;
-    else freeMemHead = newSegment;
-    joinFreeSpace();
-    return 1;
-}
 
 void MemoryAllocator::updateMemBlocks(void *del) {
     Block* block = (Block*)del;
@@ -136,20 +73,6 @@ void MemoryAllocator::updateMemBlocks(void *del) {
     }
 }
 
-void MemoryAllocator::joinFreeSpace() {
-    Block* cur = freeMemHead;
-    if(!cur)return;
-    while(1){
-        if(cur->next && (char*)cur+cur->numOfBlocks*MEM_BLOCK_SIZE == (char*)cur->next){
-            cur->numOfBlocks += cur->next->numOfBlocks;
-            cur->next = cur->next->next;
-            if(cur->next)cur->next->prev = cur;
-        }else{
-            if(cur->next == nullptr)break;
-            cur = cur->next;
-        }
-    }
-}
 
 void MemoryAllocator::ispisAlloc() {
     printString("ISPIS ALOC\n");
@@ -167,4 +90,51 @@ void MemoryAllocator::ispisFree() {
         printInteger(cur->numOfBlocks);
         __putc('\n');
     }
+}
+
+int MemoryAllocator::deallocate(void *block) {
+
+    ispisFree();
+    __putc('\n');
+
+    Block* cur = nullptr;
+    size_t startAddr = (size_t)HEAP_START_ADDR;
+    if(!allocatedMemHead || ((size_t)block-headerSize < startAddr || (size_t)block - headerSize > (size_t)HEAP_END_ADDR) ){
+        return 0;
+    }
+    if(!freeMemHead || (char*)block - headerSize < (char*)freeMemHead){
+        cur = 0;
+    }else{
+        for(cur = freeMemHead; cur->next && (char*)block - headerSize > (char*)cur->next; cur = cur->next);
+    }
+    updateMemBlocks((char*)block - headerSize);
+
+    Block* newSeg = (Block*)((char*)block - headerSize);
+    newSeg->prev = cur;
+    if(cur)newSeg->next = cur->next;
+    else newSeg->next = freeMemHead;
+    if(newSeg->next)newSeg->next->prev = newSeg;
+    if(cur)cur->next = newSeg;
+    else freeMemHead = newSeg;
+
+    printString("OSLOBODJENO: ");
+    printInteger(newSeg->numOfBlocks);
+    __putc('\n');
+
+    tryToJoin(newSeg);
+    tryToJoin(cur);
+    return 1;
+}
+
+int MemoryAllocator::tryToJoin(Block *cur) {
+    if(!cur)return 0;
+    if(cur->next && (char*)cur + cur->numOfBlocks*MEM_BLOCK_SIZE == (char*)cur->next){
+        cur->numOfBlocks += cur->next->numOfBlocks;
+        cur->next = cur->next->next;
+        if(cur->next)cur->next->prev = cur;
+        return 1;
+    }else{
+        return 0;
+    }
+
 }

@@ -10,7 +10,6 @@
 #include "../lib/console.h"
 #include "../h/print.hpp"
 
-//kako njega da alociramo sa new?
 
 class MemoryAllocator {
 public:
@@ -34,7 +33,7 @@ private:
     Block* allocatedMemHead;
 
     void updateMemBlocks(void* del);
-    void joinFreeSpace();
+    int tryToJoin(Block* cur);
 
 public:
     void ispisAlloc();
