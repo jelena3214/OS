@@ -3,6 +3,7 @@
 //
 
 #include "../h/riscv.hpp"
+#include "../h/_thread.hpp"
 
 //MemoryAllocator* Riscv::memoryAllocator = MemoryAllocator::getInstance();
 
@@ -49,7 +50,17 @@ void Riscv::handleSupervisorTrap(){
         Riscv::w_sepc(sepc);
     } else if (scause == 0x8000000000000001UL)
     {
-        printString("Softverski treceg\n");
+        _thread::timeSliceCounter++;
+        if (_thread::timeSliceCounter >= _thread::running->getTimeSlice())
+        {
+            uint64 sepc = r_sepc();
+            uint64 sstatus = r_sstatus();
+            _thread::timeSliceCounter = 0;
+            _thread::dispatch();
+            w_sstatus(sstatus);
+            w_sepc(sepc);
+        }
+        mc_sip(SIP_SSIP);
 
     } else if (scause == 0x8000000000000009UL)
     {
