@@ -8,7 +8,9 @@
 #include "../h/syscall_c.hpp"
 //ZASTO NECE SA ::
 void* operator new (size_t y);
-void operator delete (void* y);
+void *operator new[](size_t n);
+void operator delete (void* y) noexcept;
+void operator delete[](void *p) noexcept;
 
 /*class Thread {
         public:

@@ -162,7 +162,7 @@ void MemoryAllocator::compactSpace() {
 void MemoryAllocator::memcpy(Block *dst, Block *src, size_t n) {
     char* cdst = (char*)dst;
     char* csrc = (char*)src;
-    for(int i = 0; i < n; i++){
+    for(size_t i = 0; i < n; i++){
         cdst[i] = csrc[i];
     }
 }
