@@ -34,7 +34,8 @@ private:
 
     void updateMemBlocks(void* del);
     int tryToJoin(Block* cur);
-
+    void compactSpace();
+    void memcpy(Block* dst, Block* src, size_t n);
 public:
     void ispisAlloc();
     void ispisFree();
