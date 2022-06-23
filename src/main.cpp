@@ -17,7 +17,7 @@ int main() {
     __putc('f');
     __putc('\n');
     int n = 10;
-    char* niz = (char*)m.allocate(10*sizeof(char));
+    char* niz = (char*)operator new(10*sizeof(char));
     if(niz == nullptr) {
         __putc('?');
     }
@@ -41,7 +41,7 @@ int main() {
     printInteger((uint64)x);
     m.ispisFree();
     m.ispisAlloc();
-    m.deallocate(x);
+    operator delete(x);
     m.ispisFree();
     m.ispisAlloc();
     return 0;

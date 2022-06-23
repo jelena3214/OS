@@ -62,8 +62,8 @@ private:
 
     static uint64 timeSliceCounter;
 
-    static uint64 constexpr STACK_SIZE = 1024;
-    static uint64 constexpr TIME_SLICE = 2; // koje vrednosti ovde staviti?
+    static uint64 constexpr STACK_SIZE = DEFAULT_STACK_SIZE;
+    static uint64 constexpr TIME_SLICE = DEFAULT_TIME_SLICE;
 
 };
 

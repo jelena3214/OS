@@ -7,9 +7,15 @@
 
 #include "../h/riscv.hpp"
 #include "../lib/console.h"
+
+using Function = void (*)(void*);
+
 struct FunctionParameters{
     uint64 code;
-    size_t first;
+    void* first;
+    Function second;
+    void* third;
+    void* fourth;
 };
 
 void* syscall_handler(struct FunctionParameters params);

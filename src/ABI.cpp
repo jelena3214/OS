@@ -9,9 +9,10 @@
 void* syscall_handler(struct FunctionParameters params){
     //stavljanje parametara u registre u a0..a7
     volatile uint64 c1 = params.code;
-    volatile uint64 c2 = params.first;
+    volatile uint64 c2 = reinterpret_cast<uint64>(params.first);
+    Function c3 = params.second;
     printString("U ABI: ");
-    printInteger(params.first);
+    printInteger((uint64)params.first);
     __putc('\n');
     __asm__ volatile("mv x10, %0" : : "r"(c1));
     //__asm__ volatile("mv x16, %0" : : "r"(x));
