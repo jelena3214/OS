@@ -33,7 +33,7 @@ int main() {
         __putc(niz[i]);
         __putc(' ');
     }
-    int* x = (int*)m.allocate(10*sizeof(int));
+    int* x = (int*)operator new(10*sizeof(int));
     int status = m.deallocate(niz);
     if(status == 0) {
         __putc('?');

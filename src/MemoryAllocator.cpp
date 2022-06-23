@@ -58,13 +58,7 @@ void *MemoryAllocator::allocate(size_t size) {
         }
     }
 
-    if(tried == 0){
-        compactSpace(); //try again after compaction
-        return allocate(size);
-    }else{
-        tried = 0;
-        return nullptr;
-    }
+    return nullptr;
 }
 
 
@@ -146,30 +140,3 @@ int MemoryAllocator::tryToJoin(Block *cur) {
     }
 
 }
-
-void MemoryAllocator::compactSpace() {
-    tried++;
-    Block* cur = allocatedMemHead;
-    for(; cur->next; cur = cur->next){
-        if((char*)cur + cur->numOfBlocks*MEM_BLOCK_SIZE != (char*)cur->next){
-            Block* dst = (Block*)((char*)cur + cur->numOfBlocks*MEM_BLOCK_SIZE);
-            size_t n = cur->next->numOfBlocks*MEM_BLOCK_SIZE;
-            memcpy(dst, cur->next, n);
-            cur->next = dst;
-        }
-    }
-    freeMemHead = (Block*)((char*)cur + cur->numOfBlocks*MEM_BLOCK_SIZE);
-    freeMemHead->next = freeMemHead->prev = nullptr;
-    freeMemHead->numOfBlocks = ((size_t)HEAP_END_ADDR - (size_t)freeMemHead)/MEM_BLOCK_SIZE;
-    ispisFree();
-    ispisAlloc();
-}
-
-void MemoryAllocator::memcpy(Block *dst, Block *src, size_t n) {
-    char* cdst = (char*)dst;
-    char* csrc = (char*)src;
-    for(size_t i = 0; i < n; i++){
-        cdst[i] = csrc[i];
-    }
-}
-
