@@ -31,8 +31,9 @@ int mem_free (void* allocatedBlock){
 int thread_create (thread_t* handle, void(*start_routine)(void*), void* arg){
     struct FunctionParameters param;
     param.code = 0x11;
-    void* stackAddr = mem_alloc(DEFAULT_STACK_SIZE);
-    param.first = handle;
+    void* stackAddr = mem_alloc(DEFAULT_STACK_SIZE*sizeof(uint64));
+    param.first = (void*)((uint64)handle);
+    printInteger((uint64)param.first);
     param.second = start_routine;
     param.third = arg;
     param.fourth = stackAddr;
@@ -40,4 +41,24 @@ int thread_create (thread_t* handle, void(*start_routine)(void*), void* arg){
     uint64 t = (uint64)(ret);
     printInteger(t);
     return (int)t;
+}
+
+int thread_start(thread_t *handle){
+    struct FunctionParameters param;
+    param.code = 0x44;
+    param.first = (void*)((uint64)handle);
+    void* ret = syscall_handler(param);
+    uint64 t = (uint64)(ret);
+    printInteger(t);
+    return (int)t;
+}
+
+
+
+void thread_dispatch (){
+
+}
+
+int time_sleep (time_t){
+    return 0;
 }

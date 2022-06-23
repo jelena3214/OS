@@ -17,3 +17,27 @@ void *operator new[](size_t n){
 void operator delete[](void *p) noexcept{
     mem_free(p);
 }
+
+Thread::Thread(void (*body)(void *), void *arg) {
+    thread_create(&myHandle, body, arg);
+}
+
+Thread::~Thread() {
+    //treba unistiti stek i myhandle
+}
+
+int Thread::start() {
+    return thread_start(&myHandle); //MOZE OVAKO?
+}
+
+void Thread::dispatch() {
+    thread_dispatch();
+}
+
+int Thread::sleep(time_t t) {
+    return time_sleep(t);
+}
+
+Thread::Thread() {
+
+}

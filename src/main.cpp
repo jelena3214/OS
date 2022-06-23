@@ -4,46 +4,28 @@
 #include "../h/ABI.hpp"
 #include "../h/MemoryAllocator.hpp"
 #include "../h/syscall_cpp.hpp"
+#include "../h/syscall_c.hpp"
 
+void* rutina(void *p){
+    int *k = static_cast<int *>(p);
+    printString("JEEEEEEEEEEEEEEEEEEEEEEEEEEEKAAAAAAAAAAAAAAAAAAAAAAA");
+    printInteger(*k);
+    return k;
+}
 
 int main() {
     Riscv::w_stvec(reinterpret_cast<uint64>(&Riscv::supervisorTrap)); //init za adresu prekidne rutine
 
     //__asm__ volatile("mv x16, %0" : : "r"(x));
     //__asm__ volatile("mv %0, x16" : "=r"(x1));
-
+    //TODO main nit napraviti
     //__asm__ volatile("ecall");
-    MemoryAllocator& m = MemoryAllocator::getInstance();
-    __putc('f');
-    __putc('\n');
-    int n = 10;
-    char* niz = (char*)operator new(10*sizeof(char));
-    if(niz == nullptr) {
-        __putc('?');
-    }
-
-    for(int i = 0; i < n; i++) {
-        niz[i] = 'k';
-    }
-
-    m.ispisFree();
-    m.ispisAlloc();
-
-    for(int i = 0; i < n; i++) {
-        __putc(niz[i]);
-        __putc(' ');
-    }
-    int* x = (int*)operator new(10*sizeof(int));
-    int status = m.deallocate(niz);
-    if(status == 0) {
-        __putc('?');
-    }
-    printInteger((uint64)x);
-    m.ispisFree();
-    m.ispisAlloc();
-    operator delete(x);
-    m.ispisFree();
-    m.ispisAlloc();
+    int s = 4;
+    Thread th(reinterpret_cast<void (*)(void *)>(rutina), &s);
+    //thread_t* pl = static_cast<thread_t *>(operator new(sizeof(thread_t)));
+    //int x = thread_create(pl, reinterpret_cast<void (*)(void *)>(rutina), &s);
+    //printInteger((uint64)pl);
+    th.start();
     return 0;
 
 }

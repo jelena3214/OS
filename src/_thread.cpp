@@ -9,10 +9,6 @@ _thread *_thread::running = nullptr;
 
 uint64 _thread::timeSliceCounter = 0;
 
-_thread *_thread::createThread(Body body)
-{
-    return new _thread(body, TIME_SLICE);
-}
 
 void _thread::yield()
 {
@@ -36,6 +32,20 @@ void _thread::threadWrapper()
     _thread::yield();
 }
 
-void _thread::contextSwitch(_thread::Context *oldContext, _thread::Context *runningContext) {
 
+_thread *_thread::createThread(_thread::Body body, uint64 *stackAddr) {
+    MemoryAllocator& mem = MemoryAllocator::getInstance();
+    _thread* newThread = reinterpret_cast<_thread*>(mem.allocate(sizeof(_thread)));
+    if(newThread == nullptr) {
+        return nullptr;
+    }
+    newThread->stack = stackAddr;
+    newThread->body = reinterpret_cast<void (*)()>(body);
+    newThread->context = {(uint64) &threadWrapper,
+                        newThread->stack != nullptr ? (uint64) &newThread->stack[STACK_SIZE] : 0
+    };
+    newThread->timeSlice = TIME_SLICE;
+    newThread->finished = false;
+
+    return newThread;
 }

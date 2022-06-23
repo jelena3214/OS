@@ -20,23 +20,31 @@ public:
 
     using Body = void (*)();
 
-    static _thread *createThread(Body body);
+    static _thread *createThread(Body body, uint64* stackAddr);
 
     static void yield();
 
     static _thread *running;
 
 private:
-    _thread(Body body, uint64 timeSlice) :
+    _thread(Body body, uint64* stackAddr) :
     body(body),
-            stack(body != nullptr ? new uint64[STACK_SIZE] : nullptr),
+            stack(body != nullptr ? stackAddr : nullptr),
     context({(uint64) &threadWrapper,
                 stack != nullptr ? (uint64) &stack[STACK_SIZE] : 0
     }),
-    timeSlice(timeSlice),
+    timeSlice(TIME_SLICE),
             finished(false)
     {
         if (body != nullptr) { Scheduler::put(this); }
+    }
+
+    int startThread(){
+        if(body != nullptr){
+            Scheduler::put(this);
+            return 1;
+        }
+        return 0;
     }
 
     //PCB cuvaj sve registre

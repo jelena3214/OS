@@ -16,9 +16,12 @@ void Riscv::handleSupervisorTrap(){
         // interrupt: no; cause code: environment call from U-mode(8) or S-mode(9)
         volatile uint64 sepc = Riscv::r_sepc() + 4;
         volatile uint64 sstatus = Riscv::r_sstatus();
-        volatile uint64 code, param1;
+        volatile uint64 code, param1, param2, param3, param4;
         asm("mv %0, x10" : "=r"(code));
         asm("mv %0, x11" : "=r"(param1));
+        asm("mv %0, x12" : "=r"(param2));
+        asm("mv %0, x13" : "=r"(param3));
+        asm("mv %0, x14" : "=r"(param4));
         printString("U riscv: ");
         printInteger(param1);
         printString("\ncode : ");
@@ -27,7 +30,6 @@ void Riscv::handleSupervisorTrap(){
         MemoryAllocator &mem = MemoryAllocator::getInstance();
         switch(code) {
             case 0x01: {
-
                 uint64 ret = (uint64) mem.allocate((size_t) param1*MEM_BLOCK_SIZE - sizeof(Block));
                 __putc('J');
                 printInteger(ret);
@@ -43,6 +45,28 @@ void Riscv::handleSupervisorTrap(){
                 __asm__ volatile ("mv x10, %0" : : "r"(ret));
                 __asm__ volatile("sd x10, 80(fp)");
                 mem.ispisFree();
+                break;
+            }
+            case 0x11:{
+                volatile uint64 ret = 0;
+                _thread* newThread = _thread::createThread(reinterpret_cast<void (*)()>(param2), (uint64 *) param4);
+                if(newThread != nullptr){
+                    ret = 1;
+                }
+                printInteger(ret);
+                uint64* handlePlace = (uint64 *) param1;
+                *handlePlace = reinterpret_cast<uint64>(newThread);
+                __asm__ volatile ("mv x10, %0" : : "r"(ret));
+                __asm__ volatile("sd x10, 80(fp)");
+                break;
+            }
+            case 0x44:{
+                _thread* thread = (_thread *) param1;
+                uint64 ret = (uint64)thread->startThread();
+                printString("REEEEEEEEEEEEEEEET ");
+                printInteger(ret);
+                __asm__ volatile ("mv x10, %0" : : "r"(ret));
+                __asm__ volatile("sd x10, 80(fp)");
                 break;
             }
         }

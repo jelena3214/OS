@@ -12,19 +12,20 @@ void *operator new[](size_t n);
 void operator delete (void* y) noexcept;
 void operator delete[](void *p) noexcept;
 
-/*class Thread {
-        public:
+class Thread {
+public:
         Thread (void (*body)(void*), void* arg);
         virtual ~Thread ();
         int start ();
         static void dispatch ();
         static int sleep (time_t);
-        protected:
+protected:
         Thread ();
         virtual void run () {}
-        private:
+private:
         thread_t myHandle;
 };
+/*
 class Semaphore {
         public:
         Semaphore (unsigned init = 1);

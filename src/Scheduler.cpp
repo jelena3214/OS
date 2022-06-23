@@ -3,7 +3,7 @@
 //
 
 #include "../h/Scheduler.hpp"
-
+#include "../h/print.hpp"
 List<_thread> Scheduler::readyThreadQueue;
 
 _thread *Scheduler::get()
@@ -14,4 +14,9 @@ _thread *Scheduler::get()
 void Scheduler::put(_thread *ccb)
 {
     readyThreadQueue.addLast(ccb);
+    _thread* t = readyThreadQueue.peekFirst();
+    if(t == nullptr){
+        printString("NEEEEEEEEEEEEEEEEEEE");
+
+    }else printString("STAVLEOOO");
 }

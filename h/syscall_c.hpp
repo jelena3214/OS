@@ -22,4 +22,13 @@ int thread_create(
         void *arg
 );
 
+int thread_exit ();
+
+int thread_start(thread_t *handle);
+
+void thread_dispatch ();
+
+typedef unsigned long time_t;
+int time_sleep (time_t);
+
 #endif //PROJECT_BASE_SYSCALL_C_HPP
