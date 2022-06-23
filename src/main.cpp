@@ -5,25 +5,6 @@
 #include "../h/MemoryAllocator.hpp"
 #include "../h/syscall_cpp.hpp"
 
-void checkNullptr(void* p) {
-    static int x = 0;
-    if(p == nullptr) {
-        __putc('?');
-        __putc('0' + x);
-    }
-    x++;
-}
-
-void checkStatus(int status) {
-    static int y = 0;
-    if(status == 0) {
-        __putc('0' + y);
-        __putc('?');
-    }
-    y++;
-}
-
-
 
 int main() {
     Riscv::w_stvec(reinterpret_cast<uint64>(&Riscv::supervisorTrap)); //init za adresu prekidne rutine
@@ -32,13 +13,37 @@ int main() {
     //__asm__ volatile("mv %0, x16" : "=r"(x1));
 
     //__asm__ volatile("ecall");
+    MemoryAllocator& m = MemoryAllocator::getInstance();
     __putc('f');
     __putc('\n');
-    int *x = reinterpret_cast<int*>(operator new(sizeof(int)));//static_cast<int *>(operator new(sizeof(int)));
-    *x = 5;
-    printString("MAIN \n");
-    printInteger((uint64)*x);
-    operator delete(x);
+    int n = 10;
+    char* niz = (char*)m.allocate(10*sizeof(char));
+    if(niz == nullptr) {
+        __putc('?');
+    }
+
+    for(int i = 0; i < n; i++) {
+        niz[i] = 'k';
+    }
+
+    m.ispisFree();
+    m.ispisAlloc();
+
+    for(int i = 0; i < n; i++) {
+        __putc(niz[i]);
+        __putc(' ');
+    }
+    int* x = (int*)m.allocate(10*sizeof(int));
+    int status = m.deallocate(niz);
+    if(status == 0) {
+        __putc('?');
+    }
+    printInteger((uint64)x);
+    m.ispisFree();
+    m.ispisAlloc();
+    m.deallocate(x);
+    m.ispisFree();
+    m.ispisAlloc();
     return 0;
 
 }

@@ -35,3 +35,7 @@ void _thread::threadWrapper()
     running->setFinished(true);
     _thread::yield();
 }
+
+void _thread::contextSwitch(_thread::Context *oldContext, _thread::Context *runningContext) {
+
+}
