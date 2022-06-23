@@ -41,9 +41,8 @@ _thread *_thread::createThread(_thread::Body body, uint64 *stackAddr) {
     }
     newThread->stack = stackAddr;
     newThread->body = reinterpret_cast<void (*)()>(body);
-    newThread->context = {(uint64) &threadWrapper,
-                        newThread->stack != nullptr ? (uint64) &newThread->stack[STACK_SIZE] : 0
-    };
+    newThread->context.ra = (uint64) &threadWrapper;
+    newThread->context.sp =  newThread->stack != nullptr ? (uint64) &newThread->stack[STACK_SIZE] : 0;
     newThread->timeSlice = TIME_SLICE;
     newThread->finished = false;
 

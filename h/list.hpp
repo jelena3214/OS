@@ -4,7 +4,7 @@
 
 #ifndef PROJECT_BASE_LIST_HPP
 #define PROJECT_BASE_LIST_HPP
-
+#include "../h/MemoryAllocator.hpp"
 template<typename T>
 class List
 {
@@ -18,7 +18,7 @@ private:
     };
 
     Elem *head, *tail;
-
+    MemoryAllocator& mem = MemoryAllocator::getInstance();
 public:
     List() : head(0), tail(0) {}
 
@@ -28,14 +28,18 @@ public:
 
     void addFirst(T *data)
     {
-        Elem *elem = new Elem(data, head);
+        Elem *elem = mem.allocate(sizeof(Elem));
+        elem->next = 0;
+        elem->data = data;
         head = elem;
         if (!tail) { tail = head; }
     }
 
     void addLast(T *data)
     {
-        Elem *elem = new Elem(data, 0);
+        Elem *elem = static_cast<Elem *>(mem.allocate(sizeof(Elem)));
+        elem->next = 0;
+        elem->data = data;
         if (tail)
         {
             tail->next = elem;
@@ -55,7 +59,7 @@ public:
         if (!head) { tail = 0; }
 
         T *ret = elem->data;
-        delete elem;
+        mem.deallocate(elem);
         return ret;
     }
 
@@ -81,7 +85,7 @@ public:
         tail = prev;
 
         T *ret = elem->data;
-        delete elem;
+        mem.deallocate(elem);
         return ret;
     }
 

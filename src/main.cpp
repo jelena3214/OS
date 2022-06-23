@@ -5,6 +5,7 @@
 #include "../h/MemoryAllocator.hpp"
 #include "../h/syscall_cpp.hpp"
 #include "../h/syscall_c.hpp"
+#include "../h/_thread.hpp"
 
 void* rutina(void *p){
     int *k = static_cast<int *>(p);
@@ -20,12 +21,21 @@ int main() {
     //__asm__ volatile("mv %0, x16" : "=r"(x1));
     //TODO main nit napraviti
     //__asm__ volatile("ecall");
-    int s = 4;
-    Thread th(reinterpret_cast<void (*)(void *)>(rutina), &s);
+
+    _thread *threads[2];
+    MemoryAllocator& mem = MemoryAllocator::getInstance();
+    threads[0] = _thread::createThread(nullptr, nullptr);
+    _thread::running = threads[0];
+    threads[0]->startThread();
+    threads[1] = _thread::createThread(reinterpret_cast<void (*)()>(rutina),
+                                       static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))));
+    threads[1]->startThread();
+
+
     //thread_t* pl = static_cast<thread_t *>(operator new(sizeof(thread_t)));
     //int x = thread_create(pl, reinterpret_cast<void (*)(void *)>(rutina), &s);
     //printInteger((uint64)pl);
-    th.start();
+
     return 0;
 
 }

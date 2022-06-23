@@ -70,6 +70,8 @@ void Riscv::handleSupervisorTrap(){
                 break;
             }
         }
+        _thread::timeSliceCounter = 0;
+        _thread::dispatch();
         Riscv::w_sstatus(sstatus);
         Riscv::w_sepc(sepc);
     } else if (scause == 0x8000000000000001UL)
