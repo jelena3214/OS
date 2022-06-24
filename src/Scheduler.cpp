@@ -4,14 +4,17 @@
 
 #include "../h/Scheduler.hpp"
 #include "../h/print.hpp"
-List<_thread> Scheduler::readyThreadQueue;
+LinkedList Scheduler::queue;
 
 _thread *Scheduler::get()
 {
-    return readyThreadQueue.removeFirst();
+    //return readyThreadQueue.removeFirst();
+    return queue.deleteNode();
 }
 
 void Scheduler::put(_thread *ccb)
 {
-    readyThreadQueue.addLast(ccb);
+    //readyThreadQueue.addLast(ccb);
+    queue.insertNode(ccb);
+    printString("UBAIOOOO\n");
 }

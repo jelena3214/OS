@@ -31,7 +31,7 @@ int main() {
                                        static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))));
     threads[1]->startThread();
 
-
+    _thread::yield();
     //thread_t* pl = static_cast<thread_t *>(operator new(sizeof(thread_t)));
     //int x = thread_create(pl, reinterpret_cast<void (*)(void *)>(rutina), &s);
     //printInteger((uint64)pl);

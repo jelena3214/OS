@@ -13,12 +13,10 @@ private:
     {
         T *data;
         Elem *next;
-
-        Elem(T *data, Elem *next) : data(data), next(next) {}
     };
 
     Elem *head, *tail;
-    MemoryAllocator& mem = MemoryAllocator::getInstance();
+    static MemoryAllocator& mem;
 public:
     List() : head(0), tail(0) {}
 
@@ -28,7 +26,7 @@ public:
 
     void addFirst(T *data)
     {
-        Elem *elem = mem.allocate(sizeof(Elem));
+        Elem *elem = reinterpret_cast<Elem*>(mem.allocate(sizeof(Elem)));
         elem->next = 0;
         elem->data = data;
         head = elem;
@@ -37,7 +35,7 @@ public:
 
     void addLast(T *data)
     {
-        Elem *elem = static_cast<Elem *>(mem.allocate(sizeof(Elem)));
+        Elem *elem = reinterpret_cast<Elem *>(mem.allocate(sizeof(Elem)));
         elem->next = 0;
         elem->data = data;
         if (tail)
@@ -57,7 +55,6 @@ public:
         Elem *elem = head;
         head = head->next;
         if (!head) { tail = 0; }
-
         T *ret = elem->data;
         mem.deallocate(elem);
         return ret;
@@ -83,7 +80,6 @@ public:
         if (prev) { prev->next = 0; }
         else { head = 0; }
         tail = prev;
-
         T *ret = elem->data;
         mem.deallocate(elem);
         return ret;
@@ -95,7 +91,7 @@ public:
         return tail->data;
     }
 };
-
-
+template <typename T>
+MemoryAllocator& List<T>::mem = MemoryAllocator::getInstance();
 
 #endif //PROJECT_BASE_LIST_HPP

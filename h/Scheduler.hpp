@@ -5,14 +5,13 @@
 #ifndef PROJECT_BASE_SCHEDULER_HPP
 #define PROJECT_BASE_SCHEDULER_HPP
 #include "../h/list.hpp"
-
+#include "LinkedList.hpp"
 
 class _thread;
 
 class Scheduler {
 private:
-    static List<_thread> readyThreadQueue;
-
+    static LinkedList queue;
 public:
     static _thread *get();
 
