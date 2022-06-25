@@ -23,7 +23,7 @@ Thread::Thread(void (*body)(void *), void *arg) {
 }
 
 Thread::~Thread() {
-    //treba unistiti stek i myhandle
+    thread_exit();
 }
 
 int Thread::start() {
@@ -39,5 +39,5 @@ int Thread::sleep(time_t t) {
 }
 
 Thread::Thread() {
-
+    //create thread za run funkciju, a za run neki wrapper izvan klase?
 }

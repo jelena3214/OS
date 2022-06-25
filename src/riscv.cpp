@@ -69,6 +69,14 @@ void Riscv::handleSupervisorTrap(){
                 __asm__ volatile("sd x10, 80(fp)");
                 break;
             }
+            case 0x13:{
+                //da li treba raditi dispatch kad ce se svakako desiti na kraju?????
+                break;
+            }
+            case 0x12:{
+                delete _thread::running; //poziva destruktor niti
+                break;
+            }
         }
         _thread::timeSliceCounter = 0;
         _thread::dispatch();

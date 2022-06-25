@@ -20,7 +20,7 @@ public:
         static void dispatch ();
         static int sleep (time_t);
 protected:
-        Thread ();
+        Thread (); //konstuktor za prosirivanje klase on treba run da posalje u thread_create
         virtual void run () {}
 private:
         thread_t myHandle;

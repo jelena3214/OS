@@ -56,8 +56,20 @@ int thread_start(thread_t *handle){
 
 
 void thread_dispatch (){
-
+    struct FunctionParameters param;
+    param.code = 0x13;
+    syscall_handler(param);
 }
+
+int thread_exit(){
+    struct FunctionParameters param;
+    param.code = 0x12;
+    void* ret = syscall_handler(param);
+    uint64 t = (uint64)(ret);
+    printInteger(t);
+    return (int)t;
+}
+
 
 int time_sleep (time_t){
     return 0;

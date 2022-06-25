@@ -13,6 +13,7 @@ uint64 _thread::timeSliceCounter = 0;
 void _thread::yield()
 {
     __asm__ volatile ("ecall");
+    printString("KRAJ YIELD-A\n");
 }
 
 void _thread::dispatch()
@@ -32,7 +33,6 @@ void _thread::dispatch()
     }
 
     _thread::contextSwitch(&old->context, &running->context);
-    printString("ALEWEE\n");
 }
 
 void _thread::threadWrapper()

@@ -9,7 +9,14 @@
 
 void* rutina(void *p){
     int *k = static_cast<int *>(p);
-    printString("JEEEEEEEEEEEEEEEEEEEEEEEEEEEKAAAAAAAAAAAAAAAAAAAAAAA");
+    printString("JEEEEEEEEEEEEEEEEEEEEEEEEEEEKAAAAAAAAAAAAAAAAAAAAAAA\n");
+    printInteger(*k);
+    return k;
+}
+
+void* rutina1(void *p){
+    int *k = static_cast<int *>(p);
+    printString("ACAACACAAAAAAAAAAAAAAAAAAAAA\n");
     printInteger(*k);
     return k;
 }
@@ -21,8 +28,8 @@ int main() {
     //__asm__ volatile("mv %0, x16" : "=r"(x1));
     //TODO main nit napraviti
     //__asm__ volatile("ecall");
-
-    _thread *threads[2];
+    //Riscv::ms_sstatus(Riscv::SSTATUS_SIE); //omogucavamo prekide globalno
+    _thread *threads[3];
     MemoryAllocator& mem = MemoryAllocator::getInstance();
     threads[0] = _thread::createThread(nullptr, nullptr);
     _thread::running = threads[0];
@@ -30,8 +37,11 @@ int main() {
     threads[1] = _thread::createThread(reinterpret_cast<void (*)()>(rutina),
                                        static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))));
     threads[1]->startThread();
-
+    threads[2] = _thread::createThread(reinterpret_cast<void (*)()>(rutina1),
+                                       static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))));
+    threads[2]->startThread();
     _thread::yield();
+    printString("DOSLI DO MAINA\n");
     //thread_t* pl = static_cast<thread_t *>(operator new(sizeof(thread_t)));
     //int x = thread_create(pl, reinterpret_cast<void (*)(void *)>(rutina), &s);
     //printInteger((uint64)pl);

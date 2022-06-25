@@ -22,7 +22,7 @@ int thread_create(
         void *arg
 );
 
-int thread_exit ();
+int thread_exit();
 
 int thread_start(thread_t *handle);
 

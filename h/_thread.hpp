@@ -13,6 +13,7 @@ public:
     ~_thread() {
         MemoryAllocator& mem = MemoryAllocator::getInstance();
         mem.deallocate(stack);
+        mem.deallocate(this);
     }
 
     bool isFinished() const { return finished; }
@@ -52,7 +53,7 @@ private:
 
 
 
-    //PCB cuvaj sve registre
+    //TODO sta raditi sa a0 i a1??
     struct Context
     {
         uint64 ra;
