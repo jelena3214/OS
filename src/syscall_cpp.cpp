@@ -38,6 +38,12 @@ int Thread::sleep(time_t t) {
     return time_sleep(t);
 }
 
+void wrapper(void* thread){
+    if(thread != nullptr){
+        ((Thread*)thread)->run();
+    }
+}
+
 Thread::Thread() {
-    //create thread za run funkciju, a za run neki wrapper izvan klase?
+    thread_create(&myHandle, wrapper, this);//create thread za run funkciju, a za run neki wrapper izvan klase?
 }

@@ -12,6 +12,8 @@ void *operator new[](size_t n);
 void operator delete (void* y) noexcept;
 void operator delete[](void *p) noexcept;
 
+void wrapper(void* thread);
+//JE L SMEM DODATI DA JE FRIEND AKO NE SMEM DOPUNJAVATI KLASU POLJIMA I FUNKCIJAMA?
 class Thread {
 public:
         Thread (void (*body)(void*), void* arg);
@@ -19,6 +21,7 @@ public:
         int start ();
         static void dispatch ();
         static int sleep (time_t);
+        friend void wrapper(void* thread);
 protected:
         Thread (); //konstuktor za prosirivanje klase on treba run da posalje u thread_create
         virtual void run () {}
