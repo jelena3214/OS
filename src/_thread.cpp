@@ -21,13 +21,6 @@ void _thread::dispatch()
     _thread *old = running;
     if (!old->isFinished()) { Scheduler::put(old); }
     running = Scheduler::get();
-    printString("UZEOOOO : ");
-    printInteger((uint64)&running->context);
-    __putc('\n');
-    printString("stariiL ");
-    printInteger((uint64)&old->context);
-    __asm__ volatile("mv x10, %0" : : "r"((uint64)&old->context));
-    __asm__ volatile("mv x11, %0" : : "r"((uint64)&running->context));
     if(old == running){
         printString("JESTEEEEEEEEEEEEEEEEEEEEE\n");
     }

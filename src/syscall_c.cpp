@@ -46,7 +46,8 @@ int thread_create (thread_t* handle, void(*start_routine)(void*), void* arg){
 int thread_start(thread_t *handle){
     struct FunctionParameters param;
     param.code = 0x44;
-    param.first = (void*)((uint64)handle);
+    param.first = (void*)((uint64)*handle);
+    printInteger((uint64)param.first);
     void* ret = syscall_handler(param);
     uint64 t = (uint64)(ret);
     printInteger(t);

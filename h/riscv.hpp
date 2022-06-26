@@ -76,6 +76,18 @@ public:
     // mask clear register sstatus
     static void mc_sstatus(uint64 mask);
 
+    enum BitMaskSie
+    {
+        SIE_SSIE = (1 << 1),
+        SIE_SEIE = (1 << 9),
+    };
+
+    // mask set register sie
+    static void ms_sie(uint64 mask);
+
+    // mask clear register sie
+    static void mc_sie(uint64 mask);
+
     // read register sstatus
     static uint64 r_sstatus();
 
@@ -88,7 +100,6 @@ public:
 private:
     // supervisor trap handler
     static void handleSupervisorTrap();
-    //static MemoryAllocator* memoryAllocator;
 };
 
 inline uint64 Riscv::r_scause()
@@ -147,6 +158,16 @@ inline void Riscv::ms_sip(uint64 mask)
 inline void Riscv::mc_sip(uint64 mask)
 {
     __asm__ volatile ("csrc sip, %[mask]" : : [mask] "r"(mask));
+}
+
+inline void Riscv::ms_sie(uint64 mask)
+{
+    __asm__ volatile ("csrs sie, %[mask]" : : [mask] "r"(mask));
+}
+
+inline void Riscv::mc_sie(uint64 mask)
+{
+    __asm__ volatile ("csrc sie, %[mask]" : : [mask] "r"(mask));
 }
 
 inline uint64 Riscv::r_sip()

@@ -8,9 +8,7 @@
 //MemoryAllocator* Riscv::memoryAllocator = MemoryAllocator::getInstance();
 
 void Riscv::handleSupervisorTrap(){
-    //
     uint64 scause = Riscv::r_scause();
-    //printString("USAO\n");
     if (scause == 0x0000000000000008UL || scause == 0x0000000000000009UL)
     {
         // interrupt: no; cause code: environment call from U-mode(8) or S-mode(9)
@@ -94,13 +92,13 @@ void Riscv::handleSupervisorTrap(){
             w_sstatus(sstatus);
             w_sepc(sepc);
         }
-        mc_sip(SIP_SSIP);
-
+        mc_sip(SIP_SSIP); //cistimo bit koji predstavlja zahtev za softverskim prekidom
+        printString("TAJMER\n");
     } else if (scause == 0x8000000000000009UL)
     {
         // interrupt: yes; cause code: supervisor external interrupt (PLIC; could be keyboard)
-        //console_handler();
-        printString("ECALL SISTESKOG\n");
+        console_handler();
+        printString("spoljaski hardverski\n");
     } else {
         // unexpected trap cause
         uint64 sepc = Riscv::r_sepc() + 4;
