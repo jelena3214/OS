@@ -20,7 +20,12 @@ void _thread::dispatch()
 {
     _thread *old = running;
     if (!old->isFinished()) { Scheduler::put(old); }
-    running = Scheduler::get();
+    _thread* newT = Scheduler::get();
+    if(newT->isMain && newT->finished){
+        running = Scheduler::get();
+    }else{
+        running = newT;
+    }
     if(old == running){
         printString("JESTEEEEEEEEEEEEEEEEEEEEE\n");
     }
@@ -53,5 +58,6 @@ _thread *_thread::createThread(_thread::Body body, uint64 *stackAddr, void* ar) 
     newThread->timeSlice = TIME_SLICE;
     newThread->finished = false;
     newThread->arg = ar;
+    newThread->isMain = false;
     return newThread;
 }

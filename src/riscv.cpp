@@ -47,20 +47,22 @@ void Riscv::handleSupervisorTrap(){
             }
             case 0x11:{
                 volatile uint64 ret = 0;
+                printInteger((uint64 ) param4);
                 _thread* newThread = _thread::createThread(reinterpret_cast<void (*)(void *)>(param2), (uint64 *) param4,
                                                            (void *) param3);
                 if(newThread != nullptr){
                     ret = 1;
                 }
                 printInteger(ret);
-                uint64* handlePlace = (uint64 *) param1;
-                *handlePlace = reinterpret_cast<uint64>(newThread);
+                uint64** handlePlace = (uint64 **) param1;
+                *handlePlace = reinterpret_cast<uint64 *>(newThread);
                 __asm__ volatile ("mv x10, %0" : : "r"(ret));
                 __asm__ volatile("sd x10, 80(fp)");
                 break;
             }
             case 0x44:{
-                _thread* thread = (_thread *) param1;
+                uint64** thr = (uint64**)param1;
+                _thread* thread = (_thread *) *thr;
                 uint64 ret = (uint64)thread->startThread();
                 printString("REEEEEEEEEEEEEEEET ");
                 printInteger(ret);

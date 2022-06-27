@@ -8,14 +8,6 @@
 #include "../h/_thread.hpp"
 
 void* rutina(void *p){
-    __putc('S');
-    __putc('\n');
-    __putc('S');
-    __putc('\n');
-    __putc('S');
-    __putc('\n');
-    __putc('S');
-    __putc('\n');
     return p;
 }
 
@@ -39,9 +31,9 @@ void* userMain(void* p){
     __putc('\n');
     __putc('J');
     __putc('\n');
-    //uint64 t1 = 4;
-    //Thread t(reinterpret_cast<void (*)(void *)>(rutina), &t1);
-    //t.start();
+    uint64 t1 = 4;
+    Thread t(reinterpret_cast<void (*)(void *)>(rutina), &t1);
+    t.start();
     return p;
 }
 
@@ -61,14 +53,16 @@ int main() {
                                               static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
                                            nullptr);
 
-    _thread* main = _thread::createThread(nullptr, nullptr, nullptr);
-    main->startThread();
+    _thread* mainT = _thread::createThread(nullptr, nullptr, nullptr);
+    mainT->startThread();
     userM->startThread();
 
     printString("PROSAO USEEEEEEEEEEEEER");
-    _thread::running = main;
+    _thread::running = mainT;
     userRegime();
 
+    mainT->setFinished(true);
+    mainT->isMain = true;
     return 0;
 
 }
