@@ -30,13 +30,7 @@ public:
 
     static _thread *running;
 
-    int startThread(){
-        if(body != nullptr){
-            Scheduler::put(this);
-            return 1;
-        }
-        return 0;
-    }
+    int startThread();
 
 private:
     _thread(Body body, uint64* stackAddr) :

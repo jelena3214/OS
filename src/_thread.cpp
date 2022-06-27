@@ -28,6 +28,14 @@ void _thread::dispatch()
     _thread::contextSwitch(&old->context, &running->context);
 }
 
+int _thread::startThread(){
+    if(body != nullptr){
+        Scheduler::put(this);
+        return 1;
+    }
+    return 0;
+}
+
 void _thread::threadWrapper()
 {
     Riscv::popSppSpie();
@@ -49,6 +57,5 @@ _thread *_thread::createThread(_thread::Body body, uint64 *stackAddr) {
     newThread->context.sp =  newThread->stack != nullptr ? (uint64) &newThread->stack[STACK_SIZE] : 0;
     newThread->timeSlice = TIME_SLICE;
     newThread->finished = false;
-
     return newThread;
 }

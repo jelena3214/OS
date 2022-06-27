@@ -71,11 +71,21 @@ void Riscv::handleSupervisorTrap(){
                 //da li treba raditi dispatch kad ce se svakako desiti na kraju?????
                 break;
             }
-            case 0x12:{
+            case 0x12: {
                 delete _thread::running; //poziva destruktor niti
                 break;
             }
+            case 0x26:
+            {
+                Riscv::mc_sstatus(Riscv::SSTATUS_SPP);
+                sstatus = Riscv::r_sstatus();
+                __asm__ volatile ("mv x10, %0" : : "r"(1));
+                __asm__ volatile("sd x10, 80(fp)");
+                break;
+            }
         }
+        printInteger(sstatus);
+        printString("\nTOOOOO");
         _thread::timeSliceCounter = 0;
         _thread::dispatch();
         Riscv::w_sstatus(sstatus);
@@ -85,10 +95,12 @@ void Riscv::handleSupervisorTrap(){
         _thread::timeSliceCounter++;
         if (_thread::timeSliceCounter >= _thread::running->getTimeSlice())
         {
-            uint64 sepc = r_sepc();
-            uint64 sstatus = r_sstatus();
+            volatile uint64 sepc = r_sepc();
+            volatile uint64 sstatus = r_sstatus();
             _thread::timeSliceCounter = 0;
             _thread::dispatch();
+            printInteger(sstatus);
+            printString("\nTOOOOO");
             w_sstatus(sstatus);
             w_sepc(sepc);
         }

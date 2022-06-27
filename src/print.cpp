@@ -8,7 +8,7 @@
 
 void printString(char const *string)
 {
-    uint64 sstatus = Riscv::r_sstatus();
+    volatile uint64 sstatus = Riscv::r_sstatus();
     Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
     while (*string != '\0')
     {
@@ -20,7 +20,7 @@ void printString(char const *string)
 
 void printInteger(uint64 integer)
 {
-    uint64 sstatus = Riscv::r_sstatus();
+    volatile uint64 sstatus = Riscv::r_sstatus();
     Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
     static char digits[] = "0123456789";
     char buf[16];

@@ -28,9 +28,5 @@ void* syscall_handler(struct FunctionParameters params){
     __asm__ volatile("ecall");
     volatile uint64 returnValue;
     __asm__ volatile("mv %0, x10" : "=r"(returnValue));
-
-    printString("\nABI VRAT: ");
-    printInteger(returnValue);
-    __putc('\n');
     return reinterpret_cast<void *>(returnValue);
 }

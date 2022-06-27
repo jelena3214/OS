@@ -54,7 +54,11 @@ int thread_start(thread_t *handle){
     return (int)t;
 }
 
-
+void userRegime(){
+    struct FunctionParameters param;
+    param.code = 0x26;
+    syscall_handler(param);
+}
 
 void thread_dispatch (){
     struct FunctionParameters param;

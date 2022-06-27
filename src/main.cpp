@@ -26,49 +26,42 @@ void* idle(void* p){
 }
 
 void* userMain(void* p){
-    Riscv::ms_sstatus(Riscv::BitMaskSstatus::SSTATUS_SPP); //prelazak u user mode
-    uint64 t1 = 4;
-    Thread* t = new Thread(reinterpret_cast<void (*)(void *)>(rutina), &t1);
-    printString("STIGAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n");
-    t->start();
-
+    //uint64 t1 = 4;
+    //Thread t(reinterpret_cast<void (*)(void *)>(rutina), &t1);
+    //t.start();
+    __putc('J');
+    __putc('\n');
+    __putc('J');
+    __putc('\n');
+    __putc('J');
+    __putc('\n');
+    __putc('J');
+    __putc('\n');
     return p;
 }
 
 int main() {
+    Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
+    Riscv::mc_sie(Riscv::SIE_SEIE);
+    Riscv::ms_sie(Riscv::SIE_SSIE);
     Riscv::w_stvec(reinterpret_cast<uint64>(&Riscv::supervisorTrap)); //init za adresu prekidne rutine
 
     //__asm__ volatile("mv x16, %0" : : "r"(x));
     //__asm__ volatile("mv %0, x16" : "=r"(x1));
 
     //__asm__ volatile("ecall");
-    _thread *threads[4];
-    MemoryAllocator& mem = MemoryAllocator::getInstance();
-    threads[0] = _thread::createThread(nullptr, nullptr);
-    _thread::running = threads[0];
-    threads[0]->startThread();
-    //threads[1] = _thread::createThread(reinterpret_cast<void (*)()>(rutina),
-                                       //static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))));
-    //threads[1]->startThread();
-    //threads[2] = _thread::createThread(reinterpret_cast<void (*)()>(rutina1),
-                                       //static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))));
-    //threads[2]->startThread();
-    threads[1] = _thread::createThread(reinterpret_cast<void (*)()>(idle),
-                                       static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))));
-    threads[1]->startThread();
-    threads[2] = _thread::createThread(reinterpret_cast<void (*)()>(userMain),
-                                       static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))));
-    threads[2]->startThread();
-    printString("NESTOOOOOOOOOOOOO");
-    Riscv::mc_sie(Riscv::SIE_SEIE);
-    Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
-    /*
 
-    _thread::yield();*/
-    printString("DddddddddddddddddddddddddddddddddddddddddddddddddOSLI DO MAINA\n");
-    int i = 1000;
-    while(--i > 0);
-    threads[0]->setFinished(true);
+    MemoryAllocator& mem = MemoryAllocator::getInstance();
+    _thread* userM = _thread::createThread(reinterpret_cast<void (*)()>(userMain),
+                                              static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))));
+
+    _thread* main = _thread::createThread(nullptr, nullptr);
+    main->startThread();
+    userM->startThread();
+
+    printString("PROSAO USEEEEEEEEEEEEER");
+    _thread::running = main;
+    userRegime();
 
     return 0;
 

@@ -22,6 +22,8 @@ int thread_create(
         void *arg
 );
 
+void userRegime();
+
 int thread_exit();
 
 int thread_start(thread_t *handle);
