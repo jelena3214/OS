@@ -22,15 +22,21 @@ public:
 
     uint64 getTimeSlice() const { return timeSlice; }
 
-    using Body = void (*)();
+    using Body = void (*)(void*);
 
-    static _thread *createThread(Body body, uint64* stackAddr);
+    static _thread *createThread(Body body, uint64* stackAddr, void* ar);
 
     static void yield();
 
     static _thread *running;
 
-    int startThread();
+    int startThread(){
+        if(body != nullptr){
+            Scheduler::put(this);
+            return 1;
+        }
+        return 0;
+    }
 
 private:
     _thread(Body body, uint64* stackAddr) :
@@ -57,6 +63,7 @@ private:
     Context context;
     uint64 timeSlice; //broj perioda koji dobija neka nit svaki put kad joj se da procesor
     bool finished;
+    void* arg;
 
     friend class Riscv;
 

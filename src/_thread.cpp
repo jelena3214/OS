@@ -28,34 +28,30 @@ void _thread::dispatch()
     _thread::contextSwitch(&old->context, &running->context);
 }
 
-int _thread::startThread(){
-    if(body != nullptr){
-        Scheduler::put(this);
-        return 1;
-    }
-    return 0;
-}
+
 
 void _thread::threadWrapper()
 {
     Riscv::popSppSpie();
-    running->body();
+    running->body(running->arg);
     running->setFinished(true);
     _thread::yield();
 }
 
 
-_thread *_thread::createThread(_thread::Body body, uint64 *stackAddr) {
+_thread *_thread::createThread(_thread::Body body, uint64 *stackAddr, void* ar) {
     MemoryAllocator& mem = MemoryAllocator::getInstance();
+    mem.ispisFree();
     _thread* newThread = reinterpret_cast<_thread*>(mem.allocate(sizeof(_thread)));
     if(newThread == nullptr) {
         return nullptr;
     }
     newThread->stack = stackAddr;
-    newThread->body = reinterpret_cast<void (*)()>(body);
+    newThread->body = body;
     newThread->context.ra = (uint64) &threadWrapper;
     newThread->context.sp =  newThread->stack != nullptr ? (uint64) &newThread->stack[STACK_SIZE] : 0;
     newThread->timeSlice = TIME_SLICE;
     newThread->finished = false;
+    newThread->arg = ar;
     return newThread;
 }

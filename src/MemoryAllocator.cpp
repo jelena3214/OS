@@ -30,7 +30,7 @@ void *MemoryAllocator::allocate(size_t size) {
             __putc('\n');
             if(execBlocks){
                 Block* newFragment = (Block*)((char*)cur+blockNum*MEM_BLOCK_SIZE);
-                if(cur->prev)cur->prev->next = cur->next;
+                if(cur->prev)cur->prev->next = newFragment;
                 else freeMemHead = newFragment;
                 if(cur->next)cur->next->prev = newFragment;
                 newFragment->prev = cur->prev;

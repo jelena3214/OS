@@ -2,6 +2,7 @@
 // Created by os on 5/23/22.
 //
 #include "../h/syscall_cpp.hpp"
+#include "../h/print.hpp"
 void* operator new (size_t y){
     return mem_alloc(y);
 }

@@ -8,10 +8,15 @@
 #include "../h/_thread.hpp"
 
 void* rutina(void *p){
-    int *k = static_cast<int *>(p);
-    printString("JEEEEEEEEEEEEEEEEEEEEEEEEEEEKAAAAAAAAAAAAAAAAAAAAAAA\n");
-    printInteger(*k);
-    return k;
+    __putc('S');
+    __putc('\n');
+    __putc('S');
+    __putc('\n');
+    __putc('S');
+    __putc('\n');
+    __putc('S');
+    __putc('\n');
+    return p;
 }
 
 void* rutina1(void *p){
@@ -26,17 +31,17 @@ void* idle(void* p){
 }
 
 void* userMain(void* p){
+    __putc('J');
+    __putc('\n');
+    __putc('J');
+    __putc('\n');
+    __putc('J');
+    __putc('\n');
+    __putc('J');
+    __putc('\n');
     //uint64 t1 = 4;
     //Thread t(reinterpret_cast<void (*)(void *)>(rutina), &t1);
     //t.start();
-    __putc('J');
-    __putc('\n');
-    __putc('J');
-    __putc('\n');
-    __putc('J');
-    __putc('\n');
-    __putc('J');
-    __putc('\n');
     return p;
 }
 
@@ -52,10 +57,11 @@ int main() {
     //__asm__ volatile("ecall");
 
     MemoryAllocator& mem = MemoryAllocator::getInstance();
-    _thread* userM = _thread::createThread(reinterpret_cast<void (*)()>(userMain),
-                                              static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))));
+    _thread* userM = _thread::createThread(reinterpret_cast<void (*)(void*)>(userMain),
+                                              static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
+                                           nullptr);
 
-    _thread* main = _thread::createThread(nullptr, nullptr);
+    _thread* main = _thread::createThread(nullptr, nullptr, nullptr);
     main->startThread();
     userM->startThread();
 

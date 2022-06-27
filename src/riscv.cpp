@@ -47,7 +47,8 @@ void Riscv::handleSupervisorTrap(){
             }
             case 0x11:{
                 volatile uint64 ret = 0;
-                _thread* newThread = _thread::createThread(reinterpret_cast<void (*)()>(param2), (uint64 *) param4);
+                _thread* newThread = _thread::createThread(reinterpret_cast<void (*)(void *)>(param2), (uint64 *) param4,
+                                                           (void *) param3);
                 if(newThread != nullptr){
                     ret = 1;
                 }
