@@ -74,7 +74,13 @@ void Riscv::handleSupervisorTrap(){
                 break;
             }
             case 0x12: {
-                delete _thread::running; //poziva destruktor niti
+                _thread::running->~_thread(); //poziva destruktor niti
+                break;
+            }
+            case 0x55:{
+                uint64** thr = (uint64**)param1;
+                _thread* thread = (_thread *) *thr;
+                thread->~_thread();
                 break;
             }
             case 0x26:

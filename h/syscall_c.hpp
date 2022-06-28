@@ -24,6 +24,8 @@ int thread_create(
 
 void userRegime();
 
+void thread_deallocate(thread_t *handle);
+
 int thread_exit();
 
 int thread_start(thread_t *handle);

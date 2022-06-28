@@ -74,6 +74,13 @@ int thread_exit(){
     return (int)t;
 }
 
+void thread_deallocate(thread_t *handle){
+    struct FunctionParameters param;
+    param.code = 0x55;
+    param.first = (void*)((uint64)handle);
+    syscall_handler(param);
+}
+
 
 int time_sleep (time_t){
     return 0;

@@ -24,7 +24,8 @@ Thread::Thread(void (*body)(void *), void *arg) {
 }
 
 Thread::~Thread() {
-    thread_exit();
+    //thread_exit();
+    thread_deallocate(&myHandle);
 }
 
 int Thread::start() {

@@ -14,11 +14,13 @@ public:
         this->finished = true;
         printString("DESTRUKTOR");
         MemoryAllocator& mem = MemoryAllocator::getInstance();
-        deallocateStack();
+        if(stack)deallocateStack();
         mem.deallocate(this);
         printString("PTOSAO");
 
     }
+
+
 
     bool isFinished() const { return finished; }
 

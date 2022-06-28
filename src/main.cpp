@@ -37,6 +37,9 @@ void* userMain(void* p){
     Thread t3(reinterpret_cast<void (*)(void *)>(rutina1), &t2);
     t3.start();
     //userM->setFinished(true); //Da li sme ovako da oznacim da je zavrsila? ili je ok ono u destruktoru?
+    Thread *tt = new Thread(reinterpret_cast<void (*)(void *)>(rutina1), &t2);
+    tt->start();
+    delete tt;
     return p;
 }
 
@@ -66,8 +69,11 @@ int main() {
     _thread::running = mainT;
     userRegime();
 
+    while(!userM->isFinished());
+    userM->~_thread();
     mainT->setFinished(true);
     mainT->isMain = true;
+    printString("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
+    //IDLEt UVEK DA UDE TU???
     return 0;
-
 }
