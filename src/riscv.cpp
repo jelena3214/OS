@@ -8,20 +8,20 @@
 //MemoryAllocator* Riscv::memoryAllocator = MemoryAllocator::getInstance();
 
 void Riscv::handleSupervisorTrap(){
+    volatile uint64 code, param1, param2, param3, param4;
+    asm("mv %0, x10" : "=r"(code));
+    asm("mv %0, x11" : "=r"(param1));
+    asm("mv %0, x12" : "=r"(param2));
+    asm("mv %0, x13" : "=r"(param3));
+    asm("mv %0, x14" : "=r"(param4));
     uint64 scause = Riscv::r_scause();
     if (scause == 0x0000000000000008UL || scause == 0x0000000000000009UL)
     {
         // interrupt: no; cause code: environment call from U-mode(8) or S-mode(9)
         volatile uint64 sepc = Riscv::r_sepc() + 4;
         volatile uint64 sstatus = Riscv::r_sstatus();
-        volatile uint64 code, param1, param2, param3, param4;
-        asm("mv %0, x10" : "=r"(code));
-        asm("mv %0, x11" : "=r"(param1));
-        asm("mv %0, x12" : "=r"(param2));
-        asm("mv %0, x13" : "=r"(param3));
-        asm("mv %0, x14" : "=r"(param4));
         printString("U riscv: ");
-        printInteger(param1);
+        printInteger(param4);
         printString("\ncode : ");
         printInteger(code);
         __putc('\n');

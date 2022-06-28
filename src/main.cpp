@@ -8,6 +8,7 @@
 #include "../h/_thread.hpp"
 
 void* rutina(void *p){
+    printString("ACAACACAAAAAAAAAAAAAAAAAAAAA\n");
     return p;
 }
 
@@ -52,8 +53,10 @@ int main() {
     _thread* userM = _thread::createThread(reinterpret_cast<void (*)(void*)>(userMain),
                                               static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
                                            nullptr);
-
+    _thread* idleT = _thread::createThread(reinterpret_cast<void (*)(void *)>(idle), static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
+                                           nullptr);
     _thread* mainT = _thread::createThread(nullptr, nullptr, nullptr);
+    idleT->startThread();
     mainT->startThread();
     userM->startThread();
 

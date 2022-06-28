@@ -33,10 +33,10 @@ int thread_create (thread_t* handle, void(*start_routine)(void*), void* arg){
     param.code = 0x11;
     void* stackAddr = mem_alloc(DEFAULT_STACK_SIZE*sizeof(uint64));
     param.first = (void*)((uint64)handle);
-    printInteger((uint64)param.first);
     param.second = start_routine;
     param.third = arg;
     param.fourth = stackAddr;
+    printInteger((uint64)param.fourth);
     void* ret = syscall_handler(param);
     uint64 t = (uint64)(ret);
     printInteger(t);
