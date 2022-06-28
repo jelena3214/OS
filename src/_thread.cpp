@@ -20,12 +20,13 @@ void _thread::dispatch()
 {
     _thread *old = running;
     if (!old->isFinished()) { Scheduler::put(old); }
-    _thread* newT = Scheduler::get();
+    /*_thread* newT = Scheduler::get(); //OVO NE TREBA SAMO NEKO SRANJE PROBA
     if(newT->isMain && newT->finished){
         running = Scheduler::get();
     }else{
         running = newT;
-    }
+    }*/
+    running = Scheduler::get();
     if(old == running){
         printString("JESTEEEEEEEEEEEEEEEEEEEEE\n");
     }

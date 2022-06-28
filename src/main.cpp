@@ -14,7 +14,7 @@ void* rutina(void *p){
 
 void* rutina1(void *p){
     int *k = static_cast<int *>(p);
-    printString("ACAACACAAAAAAAAAAAAAAAAAAAAA\n");
+    printString("DRAGANANANANANANNANANANANANANA\n");
     printInteger(*k);
     return k;
 }
@@ -35,6 +35,9 @@ void* userMain(void* p){
     uint64 t1 = 4;
     Thread t(reinterpret_cast<void (*)(void *)>(rutina), &t1);
     t.start();
+    uint64 t2 = 4;
+    Thread t3(reinterpret_cast<void (*)(void *)>(rutina1), &t2);
+    t3.start();
     return p;
 }
 
@@ -64,8 +67,8 @@ int main() {
     _thread::running = mainT;
     userRegime();
 
-    mainT->setFinished(true);
-    mainT->isMain = true;
+    //mainT->setFinished(true);
+    //mainT->isMain = true;
     return 0;
 
 }

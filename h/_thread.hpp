@@ -37,7 +37,7 @@ public:
         }
         return 0;
     }
-    bool isMain;
+    //bool isMain;
 private:
     _thread(Body body, uint64* stackAddr) :
     body(body),
