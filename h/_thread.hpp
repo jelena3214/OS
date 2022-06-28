@@ -14,7 +14,7 @@ public:
         this->finished = true;
         printString("DESTRUKTOR");
         MemoryAllocator& mem = MemoryAllocator::getInstance();
-        mem.deallocate(stack);
+        deallocateStack();
         mem.deallocate(this);
         printString("PTOSAO");
 
@@ -54,6 +54,8 @@ private:
     {
         if (body != nullptr) { Scheduler::put(this); }
     }
+
+    void deallocateStack();
 
 
     struct Context

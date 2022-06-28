@@ -36,7 +36,7 @@ void* userMain(void* p){
     uint64 t2 = 4;
     Thread t3(reinterpret_cast<void (*)(void *)>(rutina1), &t2);
     t3.start();
-    //userM->setFinished(true); //Da li sme ovako da oznacim da je zavrsila?
+    //userM->setFinished(true); //Da li sme ovako da oznacim da je zavrsila? ili je ok ono u destruktoru?
     return p;
 }
 

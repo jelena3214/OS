@@ -19,7 +19,10 @@ void _thread::yield()
 void _thread::dispatch()
 {
     _thread *old = running;
-    if (!old->isFinished()) { Scheduler::put(old); }
+    if (!old->isFinished()) {
+        Scheduler::put(old);
+    }
+
     _thread* newT = Scheduler::get(); //OVO NE TREBA SAMO NEKO SRANJE PROBA
     if((newT->isMain && newT->finished) || newT->finished){
         running = Scheduler::get();
@@ -33,7 +36,10 @@ void _thread::dispatch()
     _thread::contextSwitch(&old->context, &running->context);
 }
 
-
+void _thread::deallocateStack(){
+    MemoryAllocator& mem = MemoryAllocator::getInstance();
+    mem.deallocate(stack);
+}
 
 void _thread::threadWrapper()
 {
