@@ -40,7 +40,7 @@ void* userMain(void* p){
     Thread *tt = new Thread(reinterpret_cast<void (*)(void *)>(rutina1), &t2);
     tt->start();
     delete tt;
-
+    Thread::dispatch();
     thread_exit(); //da li exit treba jos nesto vise od postavljanje finisha?
     printString("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
     return p;
