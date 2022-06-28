@@ -11,6 +11,7 @@
 class _thread {
 public:
     ~_thread() {
+        this->finished = true;
         printString("DESTRUKTOR");
         MemoryAllocator& mem = MemoryAllocator::getInstance();
         mem.deallocate(stack);
