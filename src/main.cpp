@@ -49,8 +49,9 @@ void* userMain(void* p){
     tt->start();
     delete tt;
     Thread::dispatch();
-    thread_exit(); //da li exit treba jos nesto vise od postavljanje finisha?
+    Thread::sleep(1000);
     printString("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
+    thread_exit(); //da li exit treba jos nesto vise od postavljanje finisha?
     return p;
 }
 

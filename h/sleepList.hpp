@@ -50,15 +50,18 @@ public:
     }
 
     _thread* get(){
-        head->time -= 1;
-        if(head->time == 0){
-            Scheduler::put(head->thread);
-            _thread* ret = head->thread;
-            head = head->next;
-            return ret;
-        }else{
-            return nullptr;
+        if(head){
+            head->time -= 1;
+            if(head->time == 0){
+                Scheduler::put(head->thread);
+                _thread* ret = head->thread;
+                head = head->next;
+                return ret;
+            }else{
+                return nullptr;
+            }
         }
+        return nullptr;
     }
 };
 

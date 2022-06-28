@@ -119,6 +119,13 @@ void Riscv::handleSupervisorTrap(){
             w_sstatus(sstatus);
             w_sepc(sepc);
         }
+
+        while(1){
+            _thread* unsleepTHread = _thread::sleepQueue.get();
+            if(unsleepTHread == nullptr)break;
+            unsleepTHread->setSleeping(false);
+        }
+
         mc_sip(SIP_SSIP); //cistimo bit koji predstavlja zahtev za softverskim prekidom
         printString("TAJMER\n");
     } else if (scause == 0x8000000000000009UL)
