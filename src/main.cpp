@@ -8,12 +8,20 @@
 #include "../h/_thread.hpp"
 
 void* rutina(void *p){
-    printString("ACAACACAAAAAAAAAAAAAAAAAAAAA\n");
+    int t = 150;
+    while(--t > 0){
+        printString("ACAACACAAAAAAAAAAAAAAAAAAAAA\n");
+    }
+    thread_exit();
     return p;
 }
 
 void* rutina1(void *p){
-    printString("DRAGANANANANANANNANANANANANANA\n");
+    int t = 150;
+    while(--t > 0){
+        printString("DRAGANANANANANANNANANANANANANA\n");
+    }
+    thread_exit();
     return p;
 }
 
@@ -75,7 +83,7 @@ int main() {
     while(!userM->isFinished());
     userM->~_thread();
     mainT->setFinished(true);
-    mainT->isMain = true;
+    mainT->setMain(true);
     printString("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTttttttttttttttttttttttttttttttttttttttt");
     //IDLEt UVEK DA UDE TU???
     return 0;

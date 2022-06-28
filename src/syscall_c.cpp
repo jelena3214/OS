@@ -82,6 +82,12 @@ void thread_deallocate(thread_t *handle){
 }
 
 
-int time_sleep (time_t){
-    return 0;
+int time_sleep (time_t time){
+    struct FunctionParameters param;
+    param.code = 0x31;
+    param.first = reinterpret_cast<void *>(time);
+    void* ret = syscall_handler(param);
+    uint64 t = (uint64)(ret);
+    printInteger(t);
+    return (int)t;
 }

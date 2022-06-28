@@ -7,6 +7,7 @@
 
 #include "../lib/hw.h"
 #include "../h/Scheduler.hpp"
+#include "../h/sleepList.hpp"
 
 class _thread {
 public:
@@ -20,11 +21,13 @@ public:
 
     }
 
-
-
     bool isFinished() const { return finished; }
 
     void setFinished(bool value) { finished = value; }
+
+    void setSleeping(bool value) { sleeping = value; }
+
+    void setMain(bool value) { isMain = value; }
 
     uint64 getTimeSlice() const { return timeSlice; }
 
@@ -43,7 +46,8 @@ public:
         }
         return 0;
     }
-    bool isMain;
+
+    static SleepList sleepQueue;
 private:
     _thread(Body body, uint64* stackAddr) :
     body(body),
@@ -70,7 +74,8 @@ private:
     uint64 *stack;
     Context context;
     uint64 timeSlice; //broj perioda koji dobija neka nit svaki put kad joj se da procesor
-    bool finished;
+    bool finished, sleeping;
+    bool isMain;
 
     void* arg;
 

@@ -8,7 +8,7 @@
 _thread *_thread::running = nullptr;
 
 uint64 _thread::timeSliceCounter = 0;
-
+SleepList _thread::sleepQueue;
 
 void _thread::yield()
 {
@@ -19,12 +19,12 @@ void _thread::yield()
 void _thread::dispatch()
 {
     _thread *old = running;
-    if (!old->isFinished()) {
+    if (!old->isFinished() && !old->sleeping) {
         Scheduler::put(old);
     }
 
-    _thread* newT = Scheduler::get(); //OVO NE TREBA SAMO NEKO SRANJE PROBA
-    if((newT->isMain && newT->finished) || newT->finished){
+    _thread* newT = Scheduler::get();
+    if((newT->isMain && newT->finished) || newT->finished || newT->sleeping){
         running = Scheduler::get();
     }else{
         running = newT;
@@ -64,6 +64,7 @@ _thread *_thread::createThread(_thread::Body body, uint64 *stackAddr, void* ar) 
     newThread->finished = false;
     newThread->arg = ar;
     newThread->isMain = false;
+    newThread->sleeping = false;
     return newThread;
 }
 

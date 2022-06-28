@@ -91,6 +91,9 @@ void Riscv::handleSupervisorTrap(){
                 __asm__ volatile("sd x10, 80(fp)");
                 break;
             }
+            case 0x31:{
+                unsigned long time = param1;
+            }
         }
         printInteger(sstatus);
         printString("\nTOOOOO");
