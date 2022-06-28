@@ -74,7 +74,7 @@ void Riscv::handleSupervisorTrap(){
                 break;
             }
             case 0x12: {
-                _thread::running->~_thread(); //poziva destruktor niti
+                _thread::running->setFinished(true);
                 break;
             }
             case 0x55:{

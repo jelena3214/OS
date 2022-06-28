@@ -66,3 +66,4 @@ _thread *_thread::createThread(_thread::Body body, uint64 *stackAddr, void* ar) 
     newThread->isMain = false;
     return newThread;
 }
+

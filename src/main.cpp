@@ -40,6 +40,9 @@ void* userMain(void* p){
     Thread *tt = new Thread(reinterpret_cast<void (*)(void *)>(rutina1), &t2);
     tt->start();
     delete tt;
+
+    thread_exit();
+    printString("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
     return p;
 }
 
@@ -73,7 +76,7 @@ int main() {
     userM->~_thread();
     mainT->setFinished(true);
     mainT->isMain = true;
-    printString("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
+    printString("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTttttttttttttttttttttttttttttttttttttttt");
     //IDLEt UVEK DA UDE TU???
     return 0;
 }
