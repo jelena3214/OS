@@ -13,16 +13,14 @@ void* rutina(void *p){
 }
 
 void* rutina1(void *p){
-    int *k = static_cast<int *>(p);
     printString("DRAGANANANANANANNANANANANANANA\n");
-    printInteger(*k);
-    return k;
+    return p;
 }
 
 void* idle(void* p){
     while(1);
 }
-
+_thread* userM;
 void* userMain(void* p){
     __putc('J');
     __putc('\n');
@@ -38,6 +36,7 @@ void* userMain(void* p){
     uint64 t2 = 4;
     Thread t3(reinterpret_cast<void (*)(void *)>(rutina1), &t2);
     t3.start();
+    userM->setFinished(true);
     return p;
 }
 
@@ -53,7 +52,7 @@ int main() {
     //__asm__ volatile("ecall");
 
     MemoryAllocator& mem = MemoryAllocator::getInstance();
-    _thread* userM = _thread::createThread(reinterpret_cast<void (*)(void*)>(userMain),
+    userM = _thread::createThread(reinterpret_cast<void (*)(void*)>(userMain),
                                               static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
                                            nullptr);
     _thread* idleT = _thread::createThread(reinterpret_cast<void (*)(void *)>(idle), static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
@@ -67,8 +66,8 @@ int main() {
     _thread::running = mainT;
     userRegime();
 
-    //mainT->setFinished(true);
-    //mainT->isMain = true;
+    mainT->setFinished(true);
+    mainT->isMain = true;
     return 0;
 
 }

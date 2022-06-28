@@ -11,9 +11,12 @@
 class _thread {
 public:
     ~_thread() {
+        printString("DESTRUKTOR");
         MemoryAllocator& mem = MemoryAllocator::getInstance();
         mem.deallocate(stack);
         mem.deallocate(this);
+        printString("PTOSAO");
+
     }
 
     bool isFinished() const { return finished; }
@@ -37,7 +40,7 @@ public:
         }
         return 0;
     }
-    //bool isMain;
+    bool isMain;
 private:
     _thread(Body body, uint64* stackAddr) :
     body(body),

@@ -42,7 +42,6 @@ void Riscv::handleSupervisorTrap(){
                 __putc('\n');
                 __asm__ volatile ("mv x10, %0" : : "r"(ret));
                 __asm__ volatile("sd x10, 80(fp)");
-                mem.ispisFree();
                 break;
             }
             case 0x11:{

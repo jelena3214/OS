@@ -20,13 +20,12 @@ void _thread::dispatch()
 {
     _thread *old = running;
     if (!old->isFinished()) { Scheduler::put(old); }
-    /*_thread* newT = Scheduler::get(); //OVO NE TREBA SAMO NEKO SRANJE PROBA
-    if(newT->isMain && newT->finished){
+    _thread* newT = Scheduler::get(); //OVO NE TREBA SAMO NEKO SRANJE PROBA
+    if((newT->isMain && newT->finished) || newT->finished){
         running = Scheduler::get();
     }else{
         running = newT;
-    }*/
-    running = Scheduler::get();
+    }
     if(old == running){
         printString("JESTEEEEEEEEEEEEEEEEEEEEE\n");
     }
@@ -47,7 +46,6 @@ void _thread::threadWrapper()
 
 _thread *_thread::createThread(_thread::Body body, uint64 *stackAddr, void* ar) {
     MemoryAllocator& mem = MemoryAllocator::getInstance();
-    mem.ispisFree();
     _thread* newThread = reinterpret_cast<_thread*>(mem.allocate(sizeof(_thread)));
     if(newThread == nullptr) {
         return nullptr;

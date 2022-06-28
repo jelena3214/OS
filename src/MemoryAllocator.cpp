@@ -95,10 +95,6 @@ void MemoryAllocator::ispisFree() {
 }
 
 int MemoryAllocator::deallocate(void *block) {
-
-    ispisFree();
-    __putc('\n');
-
     Block* cur = nullptr;
     size_t startAddr = (size_t)HEAP_START_ADDR;
     if(!allocatedMemHead || ((size_t)block-headerSize < startAddr || (size_t)block - headerSize > (size_t)HEAP_END_ADDR) ){
