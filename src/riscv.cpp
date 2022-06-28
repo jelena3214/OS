@@ -93,6 +93,10 @@ void Riscv::handleSupervisorTrap(){
             }
             case 0x31:{
                 unsigned long time = param1;
+                volatile int ret = _thread::running->sleepQueue.put(_thread::running, time);
+                __asm__ volatile ("mv x10, %0" : : "r"(ret));
+                __asm__ volatile("sd x10, 80(fp)");
+                break;
             }
         }
         printInteger(sstatus);

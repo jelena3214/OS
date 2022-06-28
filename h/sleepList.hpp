@@ -19,9 +19,10 @@ private:
     Node* head;
 
 public:
-    void put(_thread* th, uint64 t){
+    int put(_thread* th, uint64 t){
         MemoryAllocator& mem = MemoryAllocator::getInstance();
         Node* newNode = static_cast<Node *>(mem.allocate(sizeof(Node)));
+        if(newNode == nullptr)return -1;
         newNode->thread = th;
         if(!head){
             head = newNode;
@@ -45,18 +46,18 @@ public:
             }
 
         }
+        return 0;
     }
 
-    void get(){
-        while(head){
-            head->time -= 1;
-            if(head->time == 0){
-                //update sleeping flag
-                Scheduler::put(head->thread);
-                head = head->next;
-            }else{
-                break;
-            }
+    _thread* get(){
+        head->time -= 1;
+        if(head->time == 0){
+            Scheduler::put(head->thread);
+            _thread* ret = head->thread;
+            head = head->next;
+            return ret;
+        }else{
+            return nullptr;
         }
     }
 };
