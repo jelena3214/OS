@@ -41,7 +41,7 @@ void* userMain(void* p){
     tt->start();
     delete tt;
 
-    thread_exit();
+    thread_exit(); //da li exit treba jos nesto vise od postavljanje finisha?
     printString("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
     return p;
 }
