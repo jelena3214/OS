@@ -12,9 +12,6 @@ void* mem_alloc (size_t size){
     param.code = 0x01;
     int p = ((size + sizeof(Block))% MEM_BLOCK_SIZE != 0) ? 1 : 0;
     param.first = reinterpret_cast<void *>((size + sizeof(Block)) / MEM_BLOCK_SIZE + p);
-    printString("U C API: ");
-    printInteger((uint64)param.first);
-    __putc('\n');
     return syscall_handler(param);
 }
 
@@ -24,7 +21,6 @@ int mem_free (void* allocatedBlock){
     param.first = allocatedBlock;
     void* ret = syscall_handler(param);
     uint64 t = (uint64)(ret);
-    printInteger(t);
     return (int)t;
 }
 
@@ -36,10 +32,8 @@ int thread_create (thread_t* handle, void(*start_routine)(void*), void* arg){
     param.second = start_routine;
     param.third = arg;
     param.fourth = stackAddr;
-    printInteger((uint64)param.fourth);
     void* ret = syscall_handler(param);
     uint64 t = (uint64)(ret);
-    printInteger(t);
     return (int)t;
 }
 
@@ -49,7 +43,6 @@ int thread_start(thread_t *handle){
     param.first = (void*)((uint64)handle);
     void* ret = syscall_handler(param);
     uint64 t = (uint64)(ret);
-    printInteger(t);
     return (int)t;
 }
 
@@ -70,7 +63,6 @@ int thread_exit(){
     param.code = 0x12;
     void* ret = syscall_handler(param);
     uint64 t = (uint64)(ret);
-    printInteger(t);
     return (int)t;
 }
 
@@ -88,6 +80,5 @@ int time_sleep (time_t time){
     param.first = reinterpret_cast<void *>(time);
     void* ret = syscall_handler(param);
     uint64 t = (uint64)(ret);
-    printInteger(t);
     return (int)t;
 }

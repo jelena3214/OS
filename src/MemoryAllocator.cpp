@@ -7,27 +7,27 @@
 //size neka bude u bajtovima
 void *MemoryAllocator::allocate(size_t size) {
     size_t blockNum = (size + headerSize)/MEM_BLOCK_SIZE + ((size + headerSize)%MEM_BLOCK_SIZE == 0?0:1);
-    printString("Potreban prostor\n");
-    printInteger(blockNum);
-    __putc('\n');
+    //printString("Potreban prostor\n");
+    //printInteger(blockNum);
+    //__putc('\n');
     if(freeMemHead == nullptr){
-        printString("Nema slobodnog prostora\n");
+        //printString("Nema slobodnog prostora\n");
         return nullptr; //no free space anymore
     }
-    printString("Broj freeMemHead slobodnih blokova: \n");
-    printInteger((uint64)(freeMemHead->numOfBlocks));
-    __putc('\n');
+    //printString("Broj freeMemHead slobodnih blokova: \n");
+    //printInteger((uint64)(freeMemHead->numOfBlocks));
+    //__putc('\n');
     for(Block* cur = freeMemHead; cur != nullptr; cur = cur->next){
-        printString("ETO\n");
-        printInteger(cur->numOfBlocks);
-        __putc('\n');
+        //printString("ETO\n");
+        //printInteger(cur->numOfBlocks);
+        //__putc('\n');
         if(cur->numOfBlocks >= blockNum){
-            printString("Mesto");
-            __putc('\n');
+            //printString("Mesto");
+            //__putc('\n');
             size_t execBlocks = cur->numOfBlocks - blockNum;
-            printString("EXEC: ");
-            printInteger(execBlocks);
-            __putc('\n');
+            //printString("EXEC: ");
+            //printInteger(execBlocks);
+            //__putc('\n');
             if(execBlocks){
                 Block* newFragment = (Block*)((char*)cur+blockNum*MEM_BLOCK_SIZE);
                 if(cur->prev)cur->prev->next = newFragment;
@@ -77,20 +77,20 @@ void MemoryAllocator::updateMemBlocks(void *del) {
 
 
 void MemoryAllocator::ispisAlloc() {
-    printString("ISPIS ALOC\n");
+    //printString("ISPIS ALOC\n");
     Block* cur = nullptr;
     for(cur = allocatedMemHead; cur; cur = cur->next){
-        printInteger(cur->numOfBlocks);
-        __putc('\n');
+        //printInteger(cur->numOfBlocks);
+        //__putc('\n');
     }
 }
 
 void MemoryAllocator::ispisFree() {
-    printString("ISPIS FRE\n");
+    //printString("ISPIS FRE\n");
     Block* cur = nullptr;
     for(cur = freeMemHead; cur; cur = cur->next){
-        printInteger(cur->numOfBlocks);
-        __putc('\n');
+        //printInteger(cur->numOfBlocks);
+        //__putc('\n');
     }
 }
 
@@ -115,9 +115,9 @@ int MemoryAllocator::deallocate(void *block) {
     if(cur)cur->next = newSeg;
     else freeMemHead = newSeg;
 
-    printString("OSLOBODJENO: ");
-    printInteger(newSeg->numOfBlocks);
-    __putc('\n');
+    //printString("OSLOBODJENO: ");
+    //printInteger(newSeg->numOfBlocks);
+    //__putc('\n');
 
     tryToJoin(newSeg);
     tryToJoin(cur);

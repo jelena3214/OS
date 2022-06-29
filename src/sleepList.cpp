@@ -59,10 +59,10 @@ _thread* SleepList::get(){
 
 void SleepList::printSleepList(){
     Node* p = head;
-    printString("LIST uspavanih\n");
+    //printString("LIST uspavanih\n");
     while(p){
-        printInteger((time_t)p->time);
-        printString("\n");
+        //printInteger((time_t)p->time);
+        //printString("\n");
         p = p->next;
     }
 }

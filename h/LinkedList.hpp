@@ -19,10 +19,11 @@ public:
     // Default constructor
     LinkedList() { head = nullptr;}
 
-
     void insertNode(_thread* data);
 
     _thread* deleteNode();
+
+    void printList();
 };
 
 

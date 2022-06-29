@@ -4,8 +4,9 @@
 
 #include "../h/riscv.hpp"
 #include "../h/_thread.hpp"
+#include "../h/print.hpp"
+#include "../lib/console.h"
 
-//MemoryAllocator* Riscv::memoryAllocator = MemoryAllocator::getInstance();
 
 void Riscv::handleSupervisorTrap(){
     uint64 ksstatus;
@@ -24,39 +25,28 @@ void Riscv::handleSupervisorTrap(){
         // interrupt: no; cause code: environment call from U-mode(8) or S-mode(9)
         volatile uint64 sepc = Riscv::r_sepc() + 4;
         volatile uint64 sstatus = Riscv::r_sstatus();
-        printString("U riscv: ");
-        printInteger(param4);
-        printString("\ncode : ");
-        printInteger(code);
-        __putc('\n');
+
         MemoryAllocator &mem = MemoryAllocator::getInstance();
         switch(code) {
             case 0x01: {
                 uint64 ret = (uint64) mem.allocate((size_t) param1*MEM_BLOCK_SIZE - sizeof(Block));
-                __putc('J');
-                printInteger(ret);
                 __asm__ volatile ("mv x10, %0" : : "r"(ret));
                 __asm__ volatile("sd x10, 80(fp)");
                 break;
             }
             case 0x02: {
                 uint64 ret = (uint64) mem.deallocate((void *) param1);
-                __putc('\n');
-                printInteger(ret);
-                __putc('\n');
                 __asm__ volatile ("mv x10, %0" : : "r"(ret));
                 __asm__ volatile("sd x10, 80(fp)");
                 break;
             }
             case 0x11:{
                 volatile uint64 ret = 0;
-                printInteger((uint64 ) param4);
                 _thread* newThread = _thread::createThread(reinterpret_cast<void (*)(void *)>(param2), (uint64 *) param4,
                                                            (void *) param3);
                 if(newThread != nullptr){
                     ret = 1;
                 }
-                printInteger(ret);
                 uint64** handlePlace = (uint64 **) param1;
                 *handlePlace = reinterpret_cast<uint64 *>(newThread);
                 __asm__ volatile ("mv x10, %0" : : "r"(ret));
@@ -67,8 +57,6 @@ void Riscv::handleSupervisorTrap(){
                 uint64** thr = (uint64**)param1;
                 _thread* thread = (_thread *) *thr;
                 uint64 ret = (uint64)thread->startThread();
-                printString("REEEEEEEEEEEEEEEET ");
-                printInteger(ret);
                 __asm__ volatile ("mv x10, %0" : : "r"(ret));
                 __asm__ volatile("sd x10, 80(fp)");
                 break;
@@ -103,12 +91,9 @@ void Riscv::handleSupervisorTrap(){
                 }
                 __asm__ volatile ("mv x10, %0" : : "r"(ret));
                 __asm__ volatile("sd x10, 80(fp)");
-                _thread::sleepQueue.printSleepList();
                 break;
             }
         }
-        printInteger(sstatus);
-        printString("\nTOOOOO");
         _thread::timeSliceCounter = 0;
         _thread::dispatch();
         Riscv::w_sstatus(sstatus);
@@ -122,8 +107,6 @@ void Riscv::handleSupervisorTrap(){
             volatile uint64 sstatus = r_sstatus();
             _thread::timeSliceCounter = 0;
             _thread::dispatch();
-            printInteger(sstatus);
-            printString("\nTOOOOO");
             w_sstatus(sstatus);
             w_sepc(sepc);
         }
@@ -133,9 +116,8 @@ void Riscv::handleSupervisorTrap(){
             if(unsleepTHread == nullptr)break;
             unsleepTHread->setSleeping(false);
         }
-        _thread::sleepQueue.printSleepList();
+
         mc_sip(SIP_SSIP); //cistimo bit koji predstavlja zahtev za softverskim prekidom
-        printString("TAJMER\n");
     } else if (scause == 0x8000000000000009UL)
     {
         // interrupt: yes; cause code: supervisor external interrupt (PLIC; could be keyboard)

@@ -6,6 +6,9 @@
 #include "../h/syscall_cpp.hpp"
 #include "../h/syscall_c.hpp"
 #include "../h/_thread.hpp"
+#include "../h/print.hpp"
+
+extern void userMain();
 
 void* rutina(void *p){
     int t = 150;
@@ -28,10 +31,12 @@ void* rutina1(void *p){
 }
 
 void* idle(void* p){
-    while(1);
+    while(1){
+        thread_dispatch();
+    }
 }
 _thread* userM;
-void* userMain(void* p){
+/*void* userMain(void* p){
     __putc('J');
     __putc('\n');
     __putc('J');
@@ -56,7 +61,7 @@ void* userMain(void* p){
     thread_exit(); //da li exit treba jos nesto vise od postavljanje finisha?
     return p;
 }
-
+*/
 int main() {
     Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
     Riscv::mc_sie(Riscv::SIE_SEIE);

@@ -9,12 +9,16 @@ LinkedList Scheduler::queue;
 _thread *Scheduler::get()
 {
     //return readyThreadQueue.removeFirst();
-    return queue.deleteNode();
+    //printString("UZIMANJE: \n");
+    _thread* th =  queue.deleteNode();
+    //queue.printList();
+    return th;
 }
 
 void Scheduler::put(_thread *ccb)
 {
     //readyThreadQueue.addLast(ccb);
+    //printString("Stavi\n");
     queue.insertNode(ccb);
-    printString("UBAIOOOO\n");
+    //queue.printList();
 }

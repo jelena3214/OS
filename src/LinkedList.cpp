@@ -3,6 +3,7 @@
 //
 
 #include "../h/LinkedList.hpp"
+#include "../h/print.hpp"
 
 void LinkedList::insertNode(_thread* data) {
     MemoryAllocator &mem = MemoryAllocator::getInstance();
@@ -13,16 +14,10 @@ void LinkedList::insertNode(_thread* data) {
         head = newNode;
         return;
     }
-
-    // Traverse till end of list
     Node* temp = head;
     while (temp->next != nullptr) {
-
-        // Update temp
         temp = temp->next;
     }
-
-    // Insert at the last.
     temp->next = newNode;
 }
 
@@ -37,4 +32,13 @@ _thread* LinkedList::deleteNode() {
     _thread* ret = temp1->data;
     mem.deallocate(temp1);
     return ret;
+}
+
+void LinkedList::printList() {
+    Node* p = head;
+    while(p){
+        printInteger((uint64)p->data);
+        printString("\n");
+        p = p->next;
+    }
 }

@@ -13,7 +13,6 @@ SleepList _thread::sleepQueue;
 void _thread::yield()
 {
     __asm__ volatile ("ecall");
-    printString("KRAJ YIELD-A\n");
 }
 
 void _thread::dispatch()
@@ -29,10 +28,6 @@ void _thread::dispatch()
     }else{
         running = newT;
     }
-    if(old == running){
-        printString("JESTEEEEEEEEEEEEEEEEEEEEE\n");
-    }
-
     _thread::contextSwitch(&old->context, &running->context);
 }
 

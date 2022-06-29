@@ -13,11 +13,9 @@ class _thread {
 public:
     ~_thread() {
         this->finished = true;
-        printString("DESTRUKTOR");
         MemoryAllocator& mem = MemoryAllocator::getInstance();
         if(stack)deallocateStack();
         mem.deallocate(this);
-        printString("PTOSAO");
 
     }
 

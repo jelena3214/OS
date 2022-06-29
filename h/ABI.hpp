@@ -6,7 +6,6 @@
 #define PROJECT_BASE_ABI_HPP
 
 #include "../h/riscv.hpp"
-#include "../lib/console.h"
 
 using Function = void (*)(void*);
 
