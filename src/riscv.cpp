@@ -8,6 +8,10 @@
 //MemoryAllocator* Riscv::memoryAllocator = MemoryAllocator::getInstance();
 
 void Riscv::handleSupervisorTrap(){
+    uint64 ksstatus;
+    __asm__ volatile ("csrr %[sstatus], sstatus" : [sstatus] "=r"(ksstatus));
+    __asm__ volatile ("csrc sstatus, %[mask]" : : [mask] "r"((1 << 1)));
+
     volatile uint64 code, param1, param2, param3, param4;
     asm("mv %0, x10" : "=r"(code));
     asm("mv %0, x11" : "=r"(param1));
@@ -145,6 +149,7 @@ void Riscv::handleSupervisorTrap(){
         Riscv::w_sepc(sepc);
         printString("\nNZM\n");
     }
+    Riscv::ms_sstatus(ksstatus & Riscv::SSTATUS_SIE ? Riscv::SSTATUS_SIE : 0); //OVO JE LOCK ZA KERNEL KOD
 }
 
 void Riscv::popSppSpie()
