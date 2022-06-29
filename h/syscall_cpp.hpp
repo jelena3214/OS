@@ -28,16 +28,17 @@ protected:
 private:
         thread_t myHandle;
 };
-/*
+
 class Semaphore {
-        public:
+public:
         Semaphore (unsigned init = 1);
         virtual ~Semaphore ();
         int wait ();
         int signal ();
-        private:
+private:
         sem_t myHandle;
 };
+/*
 class PeriodicThread : public Thread {
         protected:
         PeriodicThread (time_t period);

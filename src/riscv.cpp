@@ -19,6 +19,7 @@ void Riscv::handleSupervisorTrap(){
     asm("mv %0, x12" : "=r"(param2));
     asm("mv %0, x13" : "=r"(param3));
     asm("mv %0, x14" : "=r"(param4));
+
     uint64 scause = Riscv::r_scause();
     if (scause == 0x0000000000000008UL || scause == 0x0000000000000009UL)
     {
