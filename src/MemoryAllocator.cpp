@@ -7,27 +7,16 @@
 //size neka bude u bajtovima
 void *MemoryAllocator::allocate(size_t size) {
     size_t blockNum = (size + headerSize)/MEM_BLOCK_SIZE + ((size + headerSize)%MEM_BLOCK_SIZE == 0?0:1);
-    //printString("Potreban prostor\n");
-    //printInteger(blockNum);
-    //__putc('\n');
+
     if(freeMemHead == nullptr){
-        //printString("Nema slobodnog prostora\n");
         return nullptr; //no free space anymore
     }
-    //printString("Broj freeMemHead slobodnih blokova: \n");
-    //printInteger((uint64)(freeMemHead->numOfBlocks));
-    //__putc('\n');
+
     for(Block* cur = freeMemHead; cur != nullptr; cur = cur->next){
-        //printString("ETO\n");
-        //printInteger(cur->numOfBlocks);
-        //__putc('\n');
+
         if(cur->numOfBlocks >= blockNum){
-            //printString("Mesto");
-            //__putc('\n');
             size_t execBlocks = cur->numOfBlocks - blockNum;
-            //printString("EXEC: ");
-            //printInteger(execBlocks);
-            //__putc('\n');
+
             if(execBlocks){
                 Block* newFragment = (Block*)((char*)cur+blockNum*MEM_BLOCK_SIZE);
                 if(cur->prev)cur->prev->next = newFragment;
@@ -114,10 +103,6 @@ int MemoryAllocator::deallocate(void *block) {
     if(newSeg->next)newSeg->next->prev = newSeg;
     if(cur)cur->next = newSeg;
     else freeMemHead = newSeg;
-
-    //printString("OSLOBODJENO: ");
-    //printInteger(newSeg->numOfBlocks);
-    //__putc('\n');
 
     tryToJoin(newSeg);
     tryToJoin(cur);
