@@ -92,10 +92,14 @@ void Riscv::handleSupervisorTrap(){
                 break;
             }
             case 0x31:{
-                unsigned long time = param1;
+                time_t time = param1;
                 volatile int ret = _thread::running->sleepQueue.put(_thread::running, time);
+                if(ret == 0){
+                    _thread::running->setSleeping(true);
+                }
                 __asm__ volatile ("mv x10, %0" : : "r"(ret));
                 __asm__ volatile("sd x10, 80(fp)");
+                _thread::sleepQueue.printSleepList();
                 break;
             }
         }
@@ -119,13 +123,13 @@ void Riscv::handleSupervisorTrap(){
             w_sstatus(sstatus);
             w_sepc(sepc);
         }
-
+        _thread::sleepQueue.decTime();
         while(1){
             _thread* unsleepTHread = _thread::sleepQueue.get();
             if(unsleepTHread == nullptr)break;
             unsleepTHread->setSleeping(false);
         }
-
+        _thread::sleepQueue.printSleepList();
         mc_sip(SIP_SSIP); //cistimo bit koji predstavlja zahtev za softverskim prekidom
         printString("TAJMER\n");
     } else if (scause == 0x8000000000000009UL)

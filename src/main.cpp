@@ -11,6 +11,7 @@ void* rutina(void *p){
     int t = 150;
     while(--t > 0){
         printString("ACAACACAAAAAAAAAAAAAAAAAAAAA\n");
+        Thread::sleep(200);
     }
     thread_exit();
     return p;
@@ -20,6 +21,7 @@ void* rutina1(void *p){
     int t = 150;
     while(--t > 0){
         printString("DRAGANANANANANANNANANANANANANA\n");
+        Thread::sleep(150);
     }
     thread_exit();
     return p;
@@ -49,7 +51,7 @@ void* userMain(void* p){
     tt->start();
     delete tt;
     Thread::dispatch();
-    Thread::sleep(1000);
+    Thread::sleep(100);
     printString("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
     thread_exit(); //da li exit treba jos nesto vise od postavljanje finisha?
     return p;
