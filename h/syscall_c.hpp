@@ -49,4 +49,6 @@ int sem_wait (sem_t id);
 
 int sem_signal (sem_t id);
 
+void sem_deallocate(sem_t* handle);
+
 #endif //PROJECT_BASE_SYSCALL_C_HPP

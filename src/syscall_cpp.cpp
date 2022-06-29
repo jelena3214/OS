@@ -49,3 +49,20 @@ void wrapper(void* thread){
 Thread::Thread() {
     thread_create(&myHandle, wrapper, this);//create thread za run funkciju, a za run neki wrapper izvan klase?
 }
+
+Semaphore::Semaphore(unsigned int init) {
+    sem_open(&myHandle, init);
+}
+
+Semaphore::~Semaphore() {
+    sem_close(myHandle);
+    sem_deallocate(&myHandle); //treba ovako?
+}
+
+int Semaphore::wait() {
+    return sem_wait(myHandle);
+}
+
+int Semaphore::signal() {
+    return sem_signal(myHandle);
+}

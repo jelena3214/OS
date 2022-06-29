@@ -78,6 +78,7 @@ private:
     void* arg;
 
     friend class Riscv;
+    friend class _sem;
 
     static void threadWrapper();
 

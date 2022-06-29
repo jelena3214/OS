@@ -82,3 +82,48 @@ int time_sleep (time_t time){
     uint64 t = (uint64)(ret);
     return (int)t;
 }
+
+
+int sem_open (sem_t* handle, unsigned init){
+    struct FunctionParameters param;
+    param.code = 0x21;
+    param.first = (void*)((uint64)handle);
+    param.third = reinterpret_cast<void *>(init);
+    void* ret = syscall_handler(param);
+    uint64 t = (uint64)(ret);
+    return (int)t;
+}
+
+int sem_close (sem_t handle){
+    struct FunctionParameters param;
+    param.code = 0x22;
+    param.first = (void*)((uint64)handle);
+    void* ret = syscall_handler(param);
+    uint64 t = (uint64)(ret);
+    return (int)t;
+}
+
+int sem_wait (sem_t id){
+    struct FunctionParameters param;
+    param.code = 0x23;
+    param.first = (void*)((uint64)id);
+    void* ret = syscall_handler(param);
+    uint64 t = (uint64)(ret);
+    return (int)t;
+}
+
+int sem_signal (sem_t id){
+    struct FunctionParameters param;
+    param.code = 0x24;
+    param.first = (void*)((uint64)id);
+    void* ret = syscall_handler(param);
+    uint64 t = (uint64)(ret);
+    return (int)t;
+}
+
+void sem_deallocate(sem_t* handle){
+    struct FunctionParameters param;
+    param.code = 0x77;
+    param.first = (void*)((uint64)handle);
+    syscall_handler(param);
+}

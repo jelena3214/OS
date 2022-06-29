@@ -6,6 +6,7 @@
 #include "../h/_thread.hpp"
 #include "../h/print.hpp"
 #include "../lib/console.h"
+#include "../h/_sem.hpp"
 
 
 void Riscv::handleSupervisorTrap(){
@@ -92,6 +93,45 @@ void Riscv::handleSupervisorTrap(){
                 }
                 __asm__ volatile ("mv x10, %0" : : "r"(ret));
                 __asm__ volatile("sd x10, 80(fp)");
+                break;
+            }
+            case 0x21:{
+                volatile uint64 ret = 0;
+                _sem* newSemaphore = _sem::create_semaphore(param3);
+                if(newSemaphore != nullptr){
+                    ret = 1;
+                }
+                uint64** handlePlace = (uint64 **) param1;
+                *handlePlace = reinterpret_cast<uint64 *>(newSemaphore);
+                __asm__ volatile ("mv x10, %0" : : "r"(ret));
+                __asm__ volatile("sd x10, 80(fp)");
+                break;
+            }
+            case 0x22:{
+                _sem* semaphore = (_sem *) param1;
+                uint64 ret = semaphore->close();
+                __asm__ volatile ("mv x10, %0" : : "r"(ret));
+                __asm__ volatile("sd x10, 80(fp)");
+                break;
+            }
+            case 0x23:{
+                _sem* semaphore = (_sem *) param1;
+                uint64 ret = semaphore->wait();
+                __asm__ volatile ("mv x10, %0" : : "r"(ret));
+                __asm__ volatile("sd x10, 80(fp)");
+                break;
+            }
+            case 0x24:{
+                _sem* semaphore = (_sem *) param1;
+                uint64 ret = semaphore->signal();
+                __asm__ volatile ("mv x10, %0" : : "r"(ret));
+                __asm__ volatile("sd x10, 80(fp)");
+                break;
+            }
+            case 0x77:{
+                uint64** sm = (uint64**)param1;
+                _sem* semaphore = (_sem *) *sm;
+                semaphore->~_sem();
                 break;
             }
         }

@@ -6,6 +6,7 @@
 #define PROJECT_BASE_PRINT_HPP
 
 #include "../lib/hw.h"
+#include "../lib/console.h"
 
 extern void printString(char const *string);
 
