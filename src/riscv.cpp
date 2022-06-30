@@ -134,6 +134,18 @@ void Riscv::handleSupervisorTrap(){
                 semaphore->~_sem();
                 break;
             }
+            case 0x41:{
+                char c = __getc();
+                __asm__ volatile ("mv x10, %0" : : "r"((uint64)c));
+                __asm__ volatile("sd x10, 80(fp)");
+                break;
+            }
+            case 0x42:{
+                uint64 c = (uint64)param1;
+                char cc = (char)c;
+                __putc(cc);
+                break;
+            }
         }
         _thread::timeSliceCounter = 0;
         _thread::dispatch();
@@ -163,14 +175,14 @@ void Riscv::handleSupervisorTrap(){
     {
         // interrupt: yes; cause code: supervisor external interrupt (PLIC; could be keyboard)
         console_handler();
-        printString("spoljaski hardverski\n");
+        //printString("spoljaski hardverski\n");
     } else {
         // unexpected trap cause
         uint64 sepc = Riscv::r_sepc() + 4;
         uint64 sstatus = Riscv::r_sstatus();
         Riscv::w_sstatus(sstatus);
         Riscv::w_sepc(sepc);
-        printString("\nNZM\n");
+        //printString("\nNZM\n");
     }
     Riscv::ms_sstatus(ksstatus & Riscv::SSTATUS_SIE ? Riscv::SSTATUS_SIE : 0); //OVO JE LOCK ZA KERNEL KOD
 }

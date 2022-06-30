@@ -13,7 +13,7 @@ extern void userMain();
 void* rutina(void *p){
     int t = 150;
     while(--t > 0){
-        printString("ACAACACAAAAAAAAAAAAAAAAAAAAA\n");
+        //printString("ACAACACAAAAAAAAAAAAAAAAAAAAA\n");
         Thread::sleep(200);
     }
     thread_exit();
@@ -23,7 +23,7 @@ void* rutina(void *p){
 void* rutina1(void *p){
     int t = 150;
     while(--t > 0){
-        printString("DRAGANANANANANANNANANANANANANA\n");
+        //printString("DRAGANANANANANANNANANANANANANA\n");
         Thread::sleep(150);
     }
     thread_exit();
@@ -64,7 +64,7 @@ _thread* userM;
 */
 int main() {
     Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
-    Riscv::mc_sie(Riscv::SIE_SEIE);
+    //Riscv::mc_sie(Riscv::SIE_SEIE);
     Riscv::ms_sie(Riscv::SIE_SSIE);
     Riscv::w_stvec(reinterpret_cast<uint64>(&Riscv::supervisorTrap)); //init za adresu prekidne rutine
 
@@ -84,7 +84,7 @@ int main() {
     mainT->startThread();
     userM->startThread();
 
-    printString("PROSAO USEEEEEEEEEEEEER");
+    //printString("PROSAO USEEEEEEEEEEEEER");
     _thread::running = mainT;
     userRegime();
 
@@ -92,7 +92,7 @@ int main() {
     userM->~_thread();
     mainT->setFinished(true);
     mainT->setMain(true);
-    printString("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTttttttttttttttttttttttttttttttttttttttt");
+    //printString("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTttttttttttttttttttttttttttttttttttttttt");
     //IDLEt UVEK DA UDE TU???
     return 0;
 }

@@ -37,8 +37,8 @@ _thread* LinkedList::deleteNode() {
 void LinkedList::printList() {
     Node* p = head;
     while(p){
-        printInteger((uint64)p->data);
-        printString("\n");
+        //printInteger((uint64)p->data);
+        //printString("\n");
         p = p->next;
     }
 }

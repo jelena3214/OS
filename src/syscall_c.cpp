@@ -127,3 +127,19 @@ void sem_deallocate(sem_t* handle){
     param.first = (void*)((uint64)handle);
     syscall_handler(param);
 }
+
+
+char getc (){
+    struct FunctionParameters param;
+    param.code = 0x41;
+    void* ret = syscall_handler(param);
+    uint64 t = (uint64)(ret);
+    return (char)t;
+}
+
+void putc (char c){
+    struct FunctionParameters param;
+    param.code = 0x42;
+    param.first = reinterpret_cast<void *>(c);
+    syscall_handler(param);
+}

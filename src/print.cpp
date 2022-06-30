@@ -5,7 +5,7 @@
 #include "../h/print.hpp"
 
 
-void printString(char const *string)
+/*void printString(char const *string)
 {
     while (*string != '\0')
     {
@@ -41,4 +41,4 @@ void printInteger(uint64 integer)
         buf[i++] = '-';
 
     while (--i >= 0) { __putc(buf[i]); }
-}
+}*/

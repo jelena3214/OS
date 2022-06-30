@@ -2,12 +2,11 @@
 // Created by os on 6/29/22.
 //
 
-#ifndef PROJECT_BASE_CONSUMERPRODUCES_C_API_TEST_HPP
-#define PROJECT_BASE_CONSUMERPRODUCES_C_API_TEST_HPP
+#ifndef PROJECT_BASE_CONSUMERPRODUCER_C_API_TEST_HPP
+#define PROJECT_BASE_CONSUMERPRODUCER_C_API_TEST_HPP
 
 #include "../h/syscall_c.hpp"
-
-#include "buffer.hpp"
+#include "../h/buffer.hpp"
 
 sem_t waitForAll;
 
@@ -24,7 +23,7 @@ void producerKeyboard(void *arg) {
 
     int key;
     int i = 0;
-    while ((key = __getc()) != 0x1b) {
+    while ((key = getc()) != 0x1b) {
         data->buffer->put(key);
         i++;
 
@@ -63,20 +62,20 @@ void consumer(void *arg) {
         int key = data->buffer->get();
         i++;
 
-        __putc(key);
+        putc(key);
 
         if (i % (5 * data->id) == 0) {
             thread_dispatch();
         }
 
         if (i % 80 == 0) {
-            __putc('\n');
+            putc('\n');
         }
     }
 
     while (data->buffer->getCnt() > 0) {
         int key = data->buffer->get();
-        __putc(key);
+        putc(key);
     }
 
     sem_signal(data->wait);
@@ -86,7 +85,7 @@ void producerConsumer_C_API() {
     char input[30];
     int n, threadNum;
 
-    /*printString("Unesite broj proizvodjaca?\n");
+    printString("Unesite broj proizvodjaca?\n");
     getString(input, 30);
     threadNum = stringToInt(input);
 
@@ -104,7 +103,7 @@ void producerConsumer_C_API() {
     } else if (threadNum < 1) {
         printString("Broj proizvodjaca mora biti veci od nula!\n");
         return;
-    }*/
+    }
 
     Buffer *buffer = new Buffer(n);
 
@@ -119,6 +118,7 @@ void producerConsumer_C_API() {
     data[threadNum].buffer = buffer;
     data[threadNum].wait = waitForAll;
     thread_create(&consumerThread, consumer, data + threadNum);
+    thread_start(&consumerThread);
 
     for (int i = 0; i < threadNum; i++) {
         data[i].id = i;
@@ -128,6 +128,7 @@ void producerConsumer_C_API() {
         thread_create(threads + i,
                       i > 0 ? producer : producerKeyboard,
                       data + i);
+        thread_start(threads + i);
     }
 
     thread_dispatch();
@@ -142,4 +143,4 @@ void producerConsumer_C_API() {
 
 }
 
-#endif //PROJECT_BASE_CONSUMERPRODUCES_C_API_TEST_HPP
+#endif //PROJECT_BASE_CONSUMERPRODUCER_C_API_TEST_HPP
