@@ -8,6 +8,9 @@
 #include "../lib/console.h"
 #include "../h/_sem.hpp"
 
+kbuffer Riscv::inputBuffer;
+kbuffer Riscv::outputBuffer;
+//TODO dodati internu nit za putc koja iz buffera salje na keriferiju, putc sistemski poziv, ESC ZNAK!, getc prekidna rutina
 
 void Riscv::handleSupervisorTrap(){
     uint64 ksstatus;

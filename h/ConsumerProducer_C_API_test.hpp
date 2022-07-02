@@ -64,6 +64,7 @@ void consumer(void *arg) {
 
         putc(key);
 
+
         if (i % (5 * data->id) == 0) {
             thread_dispatch();
         }

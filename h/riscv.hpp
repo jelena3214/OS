@@ -7,6 +7,7 @@
 
 #include "../lib/hw.h"
 #include "../h/MemoryAllocator.hpp"
+#include "kbuffer.hpp"
 
 class Riscv{
 public:
@@ -100,6 +101,7 @@ public:
 private:
     // supervisor trap handler
     static void handleSupervisorTrap();
+    static kbuffer inputBuffer, outputBuffer;
 };
 
 inline uint64 Riscv::r_scause()

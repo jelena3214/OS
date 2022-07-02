@@ -11,9 +11,13 @@ class _sem {
 private:
     unsigned val;
     LinkedList threadQueue;
-    _sem() = default;
+
     bool done;
 public:
+    _sem(int val){
+        this->val = val;
+    }
+
     static _sem* create_semaphore(unsigned v);
 
     int wait();
