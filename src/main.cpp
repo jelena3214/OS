@@ -35,33 +35,13 @@ void* idle(void* p){
         thread_dispatch();
     }
 }
-_thread* userM;
-/*void* userMain(void* p){
-    __putc('J');
-    __putc('\n');
-    __putc('J');
-    __putc('\n');
-    __putc('J');
-    __putc('\n');
-    __putc('J');
-    __putc('\n');
-    uint64 t1 = 4;
-    Thread t(reinterpret_cast<void (*)(void *)>(rutina), &t1);
-    t.start();
-    uint64 t2 = 4;
-    Thread t3(reinterpret_cast<void (*)(void *)>(rutina1), &t2);
-    t3.start();
-    //userM->setFinished(true); //Da li sme ovako da oznacim da je zavrsila? ili je ok ono u destruktoru?
-    Thread *tt = new Thread(reinterpret_cast<void (*)(void *)>(rutina1), &t2);
-    tt->start();
-    delete tt;
-    Thread::dispatch();
-    Thread::sleep(100);
-    printString("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
-    thread_exit(); //da li exit treba jos nesto vise od postavljanje finisha?
+void* userMa(void* p){
+    putc('a');
+    putc('b');
     return p;
 }
-*/
+
+
 int main() {
     Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
     //Riscv::mc_sie(Riscv::SIE_SEIE);
@@ -74,15 +54,20 @@ int main() {
     //__asm__ volatile("ecall");
 
     MemoryAllocator& mem = MemoryAllocator::getInstance();
-    userM = _thread::createThread(reinterpret_cast<void (*)(void*)>(userMain),
+    _thread* userM = _thread::createThread(reinterpret_cast<void (*)(void*)>(userMa),
                                               static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
                                            nullptr);
     _thread* idleT = _thread::createThread(reinterpret_cast<void (*)(void *)>(idle), static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
                                            nullptr);
     _thread* mainT = _thread::createThread(nullptr, nullptr, nullptr);
+
+    _thread* inputT = _thread::createThread(reinterpret_cast<void (*)(void *)>(_console::printingThread), static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
+                                            nullptr);
+
     idleT->startThread();
     mainT->startThread();
     userM->startThread();
+    inputT->startThread();
 
     //printString("PROSAO USEEEEEEEEEEEEER");
     _thread::running = mainT;
