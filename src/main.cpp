@@ -44,8 +44,8 @@ void* userMa(void* p){
 
 int main() {
     Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
-    //Riscv::mc_sie(Riscv::SIE_SEIE);
-    Riscv::ms_sie(Riscv::SIE_SSIE);
+    Riscv::mc_sie(Riscv::SIE_SEIE);
+    Riscv::mc_sie(Riscv::SIE_SSIE);
     Riscv::w_stvec(reinterpret_cast<uint64>(&Riscv::supervisorTrap)); //init za adresu prekidne rutine
 
     //__asm__ volatile("mv x16, %0" : : "r"(x));
@@ -69,15 +69,17 @@ int main() {
     userM->startThread();
     inputT->startThread();
 
-    //printString("PROSAO USEEEEEEEEEEEEER");
     _thread::running = mainT;
-    userRegime();
+    //userRegime();
+    Riscv::ms_sie(Riscv::SIE_SEIE);
+    Riscv::ms_sie(Riscv::SIE_SSIE);
+    //printS("jes");
 
     while(!userM->isFinished());
     userM->~_thread();
     mainT->setFinished(true);
     mainT->setMain(true);
-    //printString("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTttttttttttttttttttttttttttttttttttttttt");
+    //printS("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTttttttttttttttttttttttttttttttttttttttt");
     //IDLEt UVEK DA UDE TU???
     return 0;
 }

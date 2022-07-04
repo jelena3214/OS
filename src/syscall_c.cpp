@@ -4,9 +4,9 @@
 
 #include "../h/syscall_c.hpp"
 #include "../h/ABI.hpp"
+#include "../h/print.hpp"
 
 
-//TODO vidi kako ces da vratis
 void* mem_alloc (size_t size){
     struct FunctionParameters param;
     param.code = 0x01;
@@ -50,6 +50,7 @@ void userRegime(){
     struct FunctionParameters param;
     param.code = 0x26;
     syscall_handler(param);
+    printS("heh");
 }
 
 void thread_dispatch (){

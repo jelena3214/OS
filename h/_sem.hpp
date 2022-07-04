@@ -9,7 +9,7 @@
 
 class _sem {
 private:
-    unsigned val;
+    int val;
     LinkedList threadQueue;
 
     bool done;
@@ -18,7 +18,7 @@ public:
         this->val = val;
     }
 
-    static _sem* create_semaphore(unsigned v);
+    static _sem* create_semaphore(int v);
 
     int wait();
     int signal();

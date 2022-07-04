@@ -3,30 +3,33 @@
 //
 
 #include "../h/kbuffer.hpp"
+#include "../h/print.hpp"
 
 //Da li je potrebno mutex 2 puta?
 
 void kbuffer::put(int val) {
-    spaceAvailable.wait();
 
-    mutexTail.wait();
+    spaceAvailable->wait();
+    mutexTail->wait();
     buffer[tail] = val;
     tail = (tail + 1) % cap;
-    mutexTail.signal();
+    mutexTail->signal();
 
-    itemAvailable.signal();
+    itemAvailable->signal();
+
+
 }
 
 int kbuffer::get() {
-    itemAvailable.wait();
+    itemAvailable->wait();
 
-    mutexHead.wait();
+    mutexHead->wait();
 
     int ret = buffer[head];
     head = (head + 1) % cap;
-    mutexHead.signal();
+    mutexHead->signal();
 
-    spaceAvailable.signal();
+    spaceAvailable->signal();
 
     return ret;
 }

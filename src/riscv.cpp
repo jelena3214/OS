@@ -82,10 +82,9 @@ void Riscv::handleSupervisorTrap(){
             case 0x26:
             {
                 Riscv::mc_sstatus(Riscv::SSTATUS_SPP);
-                sstatus = Riscv::r_sstatus();
                 __asm__ volatile ("mv x10, %0" : : "r"(1));
                 __asm__ volatile("sd x10, 80(fp)");
-                break;
+                return;
             }
             case 0x31:{
                 time_t time = param1;
@@ -146,8 +145,8 @@ void Riscv::handleSupervisorTrap(){
                 uint64 c = (uint64)param1;
                 char cc = (char)c;
                 //__putc(cc);
-                _console& console = _console::getInstance();
-                console.inputBuffer.put(cc);
+                _console* console = _console::getInstance();
+                console->inputBuffer->put(cc);
                 break;
             }
         }

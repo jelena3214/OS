@@ -4,7 +4,7 @@
 
 #include "../h/_sem.hpp"
 
-_sem *_sem::create_semaphore(unsigned int v) {
+_sem *_sem::create_semaphore(int v) {
     MemoryAllocator& mem = MemoryAllocator::getInstance();
     _sem* newSemaphore = reinterpret_cast<_sem*>(mem.allocate(sizeof(_sem)));
     if(newSemaphore == nullptr) {
@@ -12,6 +12,7 @@ _sem *_sem::create_semaphore(unsigned int v) {
     }
     newSemaphore->val = v;
     newSemaphore->done = false;
+    newSemaphore->threadQueue.head = nullptr;
     return newSemaphore;
 }
 
@@ -20,12 +21,10 @@ int _sem::wait() {
     _thread* old = _thread::running;
     if(--val < 0){
         threadQueue.insertNode(old);
-    }else{
-        Scheduler::put(old);
-    }
-    _thread* newT = _thread::running = Scheduler::get();
-    if(old != newT){
-        _thread::contextSwitch(&old->context, &newT->context);
+        _thread* newT = _thread::running = Scheduler::get();
+        if(old != newT){
+            _thread::contextSwitch(&old->context, &newT->context);
+        }
     }
     return 0; //success
 }
@@ -33,13 +32,8 @@ int _sem::wait() {
 int _sem::signal() {
     if(done)return -1;
     if(++val <= 0){
-        Scheduler::put(threadQueue.deleteNode());
-    }
-    _thread* old = _thread::running;
-    Scheduler::put(old);
-    _thread* newT = Scheduler::get();
-    if(old != newT){
-        _thread::contextSwitch(&old->context, &newT->context);
+        _thread* th  = threadQueue.deleteNode();
+        Scheduler::put(th);
     }
     return 0; //success
 }
