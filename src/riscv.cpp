@@ -84,6 +84,8 @@ void Riscv::handleSupervisorTrap(){
                 Riscv::mc_sstatus(Riscv::SSTATUS_SPP);
                 __asm__ volatile ("mv x10, %0" : : "r"(1));
                 __asm__ volatile("sd x10, 80(fp)");
+                Riscv::w_sstatus(sstatus);
+                Riscv::w_sepc(sepc);
                 return;
             }
             case 0x31:{
@@ -147,7 +149,9 @@ void Riscv::handleSupervisorTrap(){
                 //__putc(cc);
                 _console* console = _console::getInstance();
                 console->inputBuffer->put(cc);
-                break;
+                Riscv::w_sstatus(sstatus);
+                Riscv::w_sepc(sepc);
+                return;
             }
         }
         _thread::timeSliceCounter = 0;

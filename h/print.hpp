@@ -6,7 +6,7 @@
 #define PROJECT_BASE_PRINT_HPP
 
 #include "../lib/hw.h"
-#include "../lib/console.h"
+#include "../h/syscall_c.hpp"
 
 extern void printS(char const *string);
 
