@@ -70,7 +70,7 @@ int main() {
     inputT->startThread();
 
     _thread::running = mainT;
-    //userRegime();
+    userRegime();
     printS("jes");
     Riscv::ms_sie(Riscv::SIE_SEIE);
     Riscv::ms_sie(Riscv::SIE_SSIE);
