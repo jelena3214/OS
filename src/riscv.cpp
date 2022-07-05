@@ -3,16 +3,14 @@
 //
 
 #include "../h/riscv.hpp"
-#include "../h/_thread.hpp"
 #include "../h/print.hpp"
 #include "../lib/console.h"
-#include "../h/_sem.hpp"
 
 
 //TODO dodati internu nit za putc koja iz buffera salje na keriferiju, putc sistemski poziv, ESC ZNAK!, getc prekidna rutina
 
 void Riscv::handleSupervisorTrap(){
-    uint64 ksstatus;
+    volatile uint64 ksstatus;
     __asm__ volatile ("csrr %[sstatus], sstatus" : [sstatus] "=r"(ksstatus));
     __asm__ volatile ("csrc sstatus, %[mask]" : : [mask] "r"((1 << 1)));
 
@@ -28,7 +26,7 @@ void Riscv::handleSupervisorTrap(){
     {
         // interrupt: no; cause code: environment call from U-mode(8) or S-mode(9)
         volatile uint64 sepc = Riscv::r_sepc() + 4;
-        volatile uint64 sstatus = Riscv::r_sstatus();
+        volatile uint64 sstatus = ksstatus;
 
         MemoryAllocator &mem = MemoryAllocator::getInstance();
         switch(code) {
@@ -81,10 +79,14 @@ void Riscv::handleSupervisorTrap(){
             }
             case 0x26:
             {
-                Riscv::mc_sstatus(Riscv::SSTATUS_SPP);
                 __asm__ volatile ("mv x10, %0" : : "r"(1));
                 __asm__ volatile("sd x10, 80(fp)");
                 Riscv::w_sstatus(sstatus);
+                Riscv::ms_sstatus(Riscv::SSTATUS_SPIE);
+                Riscv::ms_sie(Riscv::SIE_SEIE);
+                Riscv::ms_sie(Riscv::SIE_SSIE);
+                Riscv::mc_sstatus(Riscv::SSTATUS_SPP);
+                //__asm__ volatile ("csrc sstatus, %[mask]" : : [mask] "r"(1 << 8));
                 Riscv::w_sepc(sepc);
                 return;
             }
@@ -178,20 +180,22 @@ void Riscv::handleSupervisorTrap(){
         }
 
         mc_sip(SIP_SSIP); //cistimo bit koji predstavlja zahtev za softverskim prekidom
+        Riscv::ms_sstatus(ksstatus & Riscv::SSTATUS_SIE ? Riscv::SSTATUS_SIE : 0); //OVO JE LOCK ZA KERNEL KOD
     } else if (scause == 0x8000000000000009UL)
     {
         // interrupt: yes; cause code: supervisor external interrupt (PLIC; could be keyboard)
         console_handler();
         //printString("spoljaski hardverski\n");
+        Riscv::ms_sstatus(ksstatus & Riscv::SSTATUS_SIE ? Riscv::SSTATUS_SIE : 0); //OVO JE LOCK ZA KERNEL KOD
     } else {
         // unexpected trap cause
         uint64 sepc = Riscv::r_sepc() + 4;
         uint64 sstatus = Riscv::r_sstatus();
         Riscv::w_sstatus(sstatus);
         Riscv::w_sepc(sepc);
-        //printString("\nNZM\n");
+        printS("\nNZM\n");
     }
-    Riscv::ms_sstatus(ksstatus & Riscv::SSTATUS_SIE ? Riscv::SSTATUS_SIE : 0); //OVO JE LOCK ZA KERNEL KOD
+
 }
 
 void Riscv::popSppSpie()
