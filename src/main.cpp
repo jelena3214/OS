@@ -36,6 +36,7 @@ void* idle(void* p){
     }
 }
 void* userMa(void* p){
+    userRegime();
     putc('a');
     putc('b');
     putc('s');
@@ -74,14 +75,16 @@ int main() {
     inputT->startThread();
 
     _thread::running = mainT;
-    userRegime();
+    //userRegime();
+
+    Riscv::ms_sie(Riscv::SIE_SEIE);
+    Riscv::ms_sie(Riscv::SIE_SSIE);
 
     printS("jes");
 
 
 
     while(!userM->isFinished());
-    printS("kek");
     userM->~_thread();
     mainT->setFinished(true);
     mainT->setMain(true);

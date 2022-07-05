@@ -50,7 +50,7 @@ void userRegime(){
     struct FunctionParameters param;
     param.code = 0x26;
     syscall_handler(param);
-    printS("heh");
+    //printS("heh");
 }
 
 
