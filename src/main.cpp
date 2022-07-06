@@ -40,7 +40,8 @@ void* userMa(void* p){
     putc('a');
     putc('b');
     putc('s');
-    //printInteger(26);
+    char s = getc();
+    putc(s);
     return p;
 }
 
@@ -50,6 +51,7 @@ int main() {
     Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
     Riscv::mc_sie(Riscv::SIE_SEIE);
     Riscv::mc_sie(Riscv::SIE_SSIE);
+    Riscv::w_sip(0);
     Riscv::w_stvec(reinterpret_cast<uint64>(&Riscv::supervisorTrap)); //init za adresu prekidne rutine
 
     //__asm__ volatile("mv x16, %0" : : "r"(x));
