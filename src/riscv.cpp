@@ -26,7 +26,7 @@ void Riscv::handleSupervisorTrap(){
     {
         // interrupt: no; cause code: environment call from U-mode(8) or S-mode(9)
         volatile uint64 sepc = Riscv::r_sepc() + 4;
-        volatile uint64 sstatus = ksstatus;
+        //volatile uint64 sstatus = ksstatus;
 
         MemoryAllocator &mem = MemoryAllocator::getInstance();
         switch(code) {
@@ -81,14 +81,12 @@ void Riscv::handleSupervisorTrap(){
             {
                 __asm__ volatile ("mv x10, %0" : : "r"(1));
                 __asm__ volatile("sd x10, 80(fp)");
-                Riscv::w_sstatus(sstatus);
-                Riscv::ms_sstatus(Riscv::SSTATUS_SPIE);
+                ksstatus &= ~(1 << 8); //clear spp
+                ksstatus |= (1 << 5); //set spie
+
                 Riscv::ms_sie(Riscv::SIE_SEIE);
                 Riscv::ms_sie(Riscv::SIE_SSIE);
-                Riscv::mc_sstatus(Riscv::SSTATUS_SPP);
-                //__asm__ volatile ("csrc sstatus, %[mask]" : : [mask] "r"(1 << 8));
-                Riscv::w_sepc(sepc);
-                return;
+                break;
             }
             case 0x31:{
                 time_t time = param1;
@@ -151,14 +149,14 @@ void Riscv::handleSupervisorTrap(){
                 //__putc(cc);
                 _console* console = _console::getInstance();
                 console->inputBuffer->put(cc);
-                Riscv::w_sstatus(sstatus);
+                Riscv::w_sstatus(ksstatus);
                 Riscv::w_sepc(sepc);
                 return;
             }
         }
         _thread::timeSliceCounter = 0;
         _thread::dispatch();
-        Riscv::w_sstatus(sstatus);
+        Riscv::w_sstatus(ksstatus);
         Riscv::w_sepc(sepc);
     } else if (scause == 0x8000000000000001UL)
     {
@@ -166,10 +164,10 @@ void Riscv::handleSupervisorTrap(){
         if (_thread::timeSliceCounter >= _thread::running->getTimeSlice())
         {
             volatile uint64 sepc = r_sepc();
-            volatile uint64 sstatus = r_sstatus();
+            //volatile uint64 sstatus = r_sstatus();
             _thread::timeSliceCounter = 0;
             _thread::dispatch();
-            w_sstatus(sstatus);
+            w_sstatus(ksstatus);
             w_sepc(sepc);
         }
         _thread::sleepQueue.decTime();
@@ -190,8 +188,8 @@ void Riscv::handleSupervisorTrap(){
     } else {
         // unexpected trap cause
         uint64 sepc = Riscv::r_sepc() + 4;
-        uint64 sstatus = Riscv::r_sstatus();
-        Riscv::w_sstatus(sstatus);
+        //uint64 sstatus = Riscv::r_sstatus();
+        Riscv::w_sstatus(ksstatus);
         Riscv::w_sepc(sepc);
         printS("\nNZM\n");
     }

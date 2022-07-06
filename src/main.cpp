@@ -40,9 +40,6 @@ void* userMa(void* p){
     putc('a');
     putc('b');
     putc('s');
-    //uint64 volatile sstatus;
-    //__asm__ volatile ("csrr %[sstatus], sstatus" : [sstatus] "=r"(sstatus));
-    //printInteger(sstatus);
     return p;
 }
 
@@ -75,15 +72,11 @@ int main() {
     inputT->startThread();
 
     _thread::running = mainT;
-    //userRegime();
 
     Riscv::ms_sie(Riscv::SIE_SEIE);
     Riscv::ms_sie(Riscv::SIE_SSIE);
 
-    printS("jes");
-
-
-
+//TODO KAKO DA KERNEL CEKA INPUTT?
     while(!userM->isFinished());
     userM->~_thread();
     mainT->setFinished(true);
