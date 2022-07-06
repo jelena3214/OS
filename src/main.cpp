@@ -40,8 +40,10 @@ void* userMa(void* p){
     putc('a');
     putc('b');
     putc('s');
+    //printInteger(26);
     return p;
 }
+
 
 
 int main() {
@@ -78,6 +80,7 @@ int main() {
 
 //TODO KAKO DA KERNEL CEKA INPUTT?
     while(!userM->isFinished());
+    while(!inputT->isFinished());
     userM->~_thread();
     mainT->setFinished(true);
     mainT->setMain(true);

@@ -25,6 +25,8 @@ public:
         return instance;
     }
 
+    static void console_handler();
+
     friend class Riscv;
 
     static void* printingThread(void* p);

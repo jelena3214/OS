@@ -7,7 +7,7 @@
 #include "../lib/console.h"
 
 
-//TODO dodati internu nit za putc koja iz buffera salje na keriferiju, putc sistemski poziv, ESC ZNAK!, getc prekidna rutina
+//TODO dodati ESC ZNAK!, getc prekidna rutina
 
 void Riscv::handleSupervisorTrap(){
     volatile uint64 ksstatus;
@@ -138,10 +138,13 @@ void Riscv::handleSupervisorTrap(){
                 break;
             }
             case 0x41:{
-                char c = __getc();
+                _console* console = _console::getInstance();
+                char c = console->outputBuffer->get();
+                Riscv::w_sstatus(ksstatus);
+                Riscv::w_sepc(sepc);
                 __asm__ volatile ("mv x10, %0" : : "r"((uint64)c));
                 __asm__ volatile("sd x10, 80(fp)");
-                break;
+                return;
             }
             case 0x42:{
                 uint64 c = (uint64)param1;
@@ -182,7 +185,7 @@ void Riscv::handleSupervisorTrap(){
     } else if (scause == 0x8000000000000009UL)
     {
         // interrupt: yes; cause code: supervisor external interrupt (PLIC; could be keyboard)
-        console_handler();
+        _console::console_handler();
         //printString("spoljaski hardverski\n");
         Riscv::ms_sstatus(ksstatus & Riscv::SSTATUS_SIE ? Riscv::SSTATUS_SIE : 0); //OVO JE LOCK ZA KERNEL KOD
     } else {

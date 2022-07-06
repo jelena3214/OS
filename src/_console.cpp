@@ -16,3 +16,14 @@ void *_console::printingThread(void *p) {
         }
     }
 }
+
+void _console::console_handler() {
+    if(plic_claim() == CONSOLE_IRQ){
+        if(CONSOLE_RX_STATUS_BIT){
+            _console* console = _console::getInstance();
+            char c = *reinterpret_cast<char*>(CONSOLE_RX_DATA);
+            console->outputBuffer->put(c);
+        }
+        plic_complete(CONSOLE_IRQ);
+    }
+}

@@ -20,8 +20,7 @@ void printS(char const *string)
 
 void printInteger(uint64 integer)
 {
-    uint64 sstatus = Riscv::r_sstatus();
-    Riscv::mc_sstatus(Riscv::SSTATUS_SIE);
+
     static char digits[] = "0123456789";
     char buf[16];
     int i, neg;
@@ -46,5 +45,4 @@ void printInteger(uint64 integer)
         buf[i++] = '-';
 
     while (--i >= 0) { putc(buf[i]); }
-    Riscv::ms_sstatus(sstatus & Riscv::SSTATUS_SIE ? Riscv::SSTATUS_SIE : 0);
 }
