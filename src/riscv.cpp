@@ -185,8 +185,11 @@ void Riscv::handleSupervisorTrap(){
     } else if (scause == 0x8000000000000009UL)
     {
         // interrupt: yes; cause code: supervisor external interrupt (PLIC; could be keyboard)
+        uint64 sepc = Riscv::r_sepc() + 4;
         _console::console_handler();
         //printString("spoljaski hardverski\n");
+        Riscv::w_sstatus(ksstatus);
+        Riscv::w_sepc(sepc);
         Riscv::ms_sstatus(ksstatus & Riscv::SSTATUS_SIE ? Riscv::SSTATUS_SIE : 0); //OVO JE LOCK ZA KERNEL KOD
     } else {
         // unexpected trap cause
