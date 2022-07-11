@@ -33,7 +33,10 @@ public:
 
     _console(const _console&) = delete;
 
-    //destruktor
+    bool outEmpty();
+    bool inEmpty();
+
+    ~_console();
 
 };
 

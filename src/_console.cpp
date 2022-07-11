@@ -28,3 +28,18 @@ void _console::console_handler() {
     }
     plic_complete(cause);
 }
+
+bool _console::outEmpty() {
+    return outputBuffer->empty();
+}
+
+bool _console::inEmpty() {
+    return inputBuffer->empty();
+}
+
+_console::~_console() {
+    inputBuffer->~kbuffer();
+    outputBuffer->~kbuffer();
+    MemoryAllocator& mem = MemoryAllocator::getInstance();
+    mem.deallocate(this);
+}

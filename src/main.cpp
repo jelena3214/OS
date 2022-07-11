@@ -77,7 +77,10 @@ int main() {
     Riscv::ms_sie(Riscv::SIE_SSIE);
 
     while(!userM->isFinished());
-    while(!inputT->isFinished()); //OBEZBEDI DA SE SVE ISPISE PRE KRAJA
+
+    _console* console = _console::getInstance();
+    while(!console->inEmpty()); //OBEZBEDI DA SE SVE ISPISE PRE KRAJA
+    while(!console->outEmpty()); //OBEZBEDI DA SE SVE upise PRE KRAJA
     userM->~_thread();
     //OVAJ DEO MORA DA BI SE LEPO ZAVRSIO KERNEL DA NE PRIHVATA PREKIDE I SLICNO, jer tajmer
     Riscv::mc_sie(Riscv::SIE_SEIE);
