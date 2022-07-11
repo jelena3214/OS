@@ -15,15 +15,7 @@ private:
     _console() {}
     static _console* instance;
 public:
-    static _console* getInstance(){
-        if(instance == nullptr){
-            MemoryAllocator& mem = MemoryAllocator::getInstance();
-            instance = static_cast<_console *>(mem.allocate(sizeof(_console)));
-            instance->inputBuffer = kbuffer::create_buffer();
-            instance->outputBuffer = kbuffer::create_buffer();
-        }
-        return instance;
-    }
+    static _console* getInstance();
 
     static void console_handler();
 
