@@ -35,6 +35,6 @@ int kbuffer::get() {
 }
 
 kbuffer::~kbuffer() {
-    MemoryAllocator& mem = MemoryAllocator::getInstance();
+    MemoryAllocator &mem = MemoryAllocator::getInstance();
     mem.deallocate(buffer);
 }

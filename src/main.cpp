@@ -54,10 +54,6 @@ int main() {
     Riscv::w_sip(0);
     Riscv::w_stvec(reinterpret_cast<uint64>(&Riscv::supervisorTrap)); //init za adresu prekidne rutine
 
-    //__asm__ volatile("mv x16, %0" : : "r"(x));
-    //__asm__ volatile("mv %0, x16" : "=r"(x1));
-
-    //__asm__ volatile("ecall");
 
     MemoryAllocator& mem = MemoryAllocator::getInstance();
     _thread* userM = _thread::createThread(reinterpret_cast<void (*)(void*)>(userMa),
@@ -82,11 +78,8 @@ int main() {
 
 //TODO KAKO DA KERNEL CEKA INPUTT?
     while(!userM->isFinished());
-    while(!inputT->isFinished());
     userM->~_thread();
     mainT->setFinished(true);
     mainT->setMain(true);
-    //printS("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTttttttttttttttttttttttttttttttttttttttt");
-    //IDLEt UVEK DA UDE TU???
     return 0;
 }

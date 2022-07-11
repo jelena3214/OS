@@ -79,6 +79,7 @@ private:
 
     friend class Riscv;
     friend class _sem;
+    friend class _console;
 
     static void threadWrapper();
 
