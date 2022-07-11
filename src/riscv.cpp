@@ -187,7 +187,7 @@ void Riscv::handleSupervisorTrap(){
         // interrupt: yes; cause code: supervisor external interrupt (PLIC; could be keyboard)
         uint64 sepc = Riscv::r_sepc() + 4;
         _console::console_handler();
-        w_sip(0);
+        mc_sip(SIP_SEIP);
         //printString("spoljaski hardverski\n");
         Riscv::w_sstatus(ksstatus);
         Riscv::w_sepc(sepc);

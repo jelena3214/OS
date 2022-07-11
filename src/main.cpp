@@ -79,6 +79,9 @@ int main() {
 //TODO KAKO DA KERNEL CEKA INPUTT?
     while(!userM->isFinished());
     userM->~_thread();
+    Riscv::mc_sie(Riscv::SIE_SEIE);
+    Riscv::mc_sie(Riscv::SIE_SSIE);
+    Riscv::w_sip(0);
     mainT->setFinished(true);
     mainT->setMain(true);
     return 0;

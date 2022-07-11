@@ -25,7 +25,6 @@ void _console::console_handler() {
             char c = *reinterpret_cast<char*>(CONSOLE_RX_DATA);
             console->outputBuffer->put(c);
         }
-        plic_complete(cause);
     }
-
+    plic_complete(cause);
 }
