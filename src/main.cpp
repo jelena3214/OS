@@ -37,11 +37,11 @@ void* idle(void* p){
 }
 void* userMa(void* p){
     userRegime();
+    char s = getc();
+    putc(s);
     putc('a');
     putc('b');
     putc('s');
-    char s = getc();
-    putc(s);
     return p;
 }
 
@@ -76,9 +76,10 @@ int main() {
     Riscv::ms_sie(Riscv::SIE_SEIE);
     Riscv::ms_sie(Riscv::SIE_SSIE);
 
-//TODO KAKO DA KERNEL CEKA INPUTT?
     while(!userM->isFinished());
+    while(!inputT->isFinished()); //OBEZBEDI DA SE SVE ISPISE PRE KRAJA
     userM->~_thread();
+    //OVAJ DEO MORA DA BI SE LEPO ZAVRSIO KERNEL DA NE PRIHVATA PREKIDE I SLICNO, jer tajmer
     Riscv::mc_sie(Riscv::SIE_SEIE);
     Riscv::mc_sie(Riscv::SIE_SSIE);
     Riscv::w_sip(0);
