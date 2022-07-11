@@ -27,6 +27,7 @@ int kbuffer::get() {
 
     int ret = buffer[head];
     head = (head + 1) % cap;
+
     mutexHead->signal();
 
     spaceAvailable->signal();

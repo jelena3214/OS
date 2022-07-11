@@ -10,7 +10,7 @@ void *_console::printingThread(void *p) {
     while(1){
         while(*(volatile char*)CONSOLE_STATUS & CONSOLE_TX_STATUS_BIT){
             _console* console = _console::getInstance();
-            char c = console->inputBuffer->get();
+            volatile char c = console->inputBuffer->get();
             uint64 volatile* const reg = reinterpret_cast<volatile uint64 *const>(CONSOLE_TX_DATA);
             *reg = c;
         }
@@ -30,7 +30,8 @@ void _console::console_handler() {
 }
 
 bool _console::outEmpty() {
-    return outputBuffer->empty();
+    volatile bool is = outputBuffer->empty();
+    return is;
 }
 
 bool _console::inEmpty() {

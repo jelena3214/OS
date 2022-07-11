@@ -140,21 +140,16 @@ void Riscv::handleSupervisorTrap(){
             case 0x41:{
                 _console* console = _console::getInstance();
                 char c = console->outputBuffer->get();
-                Riscv::w_sstatus(ksstatus);
-                Riscv::w_sepc(sepc);
                 __asm__ volatile ("mv x10, %0" : : "r"((uint64)c));
                 __asm__ volatile("sd x10, 80(fp)");
-                return;
+                break;
             }
             case 0x42:{
                 uint64 c = (uint64)param1;
                 char cc = (char)c;
-                //__putc(cc);
                 _console* console = _console::getInstance();
                 console->inputBuffer->put(cc);
-                Riscv::w_sstatus(ksstatus);
-                Riscv::w_sepc(sepc);
-                return;
+                break;
             }
         }
         _thread::timeSliceCounter = 0;

@@ -10,26 +10,6 @@
 
 extern void userMain();
 
-void* rutina(void *p){
-    int t = 150;
-    while(--t > 0){
-        //printString("ACAACACAAAAAAAAAAAAAAAAAAAAA\n");
-        Thread::sleep(200);
-    }
-    thread_exit();
-    return p;
-}
-
-void* rutina1(void *p){
-    int t = 150;
-    while(--t > 0){
-        //printString("DRAGANANANANANANNANANANANANANA\n");
-        Thread::sleep(150);
-    }
-    thread_exit();
-    return p;
-}
-
 void* idle(void* p){
     while(1){
         thread_dispatch();
@@ -37,11 +17,13 @@ void* idle(void* p){
 }
 void* userMa(void* p){
     userRegime();
-    char s = getc();
-    putc(s);
     putc('a');
     putc('b');
     putc('s');
+    char s ;
+    while((s = getc()) != 0xa){
+        putc(s);
+    }
     return p;
 }
 
@@ -56,7 +38,7 @@ int main() {
 
 
     MemoryAllocator& mem = MemoryAllocator::getInstance();
-    _thread* userM = _thread::createThread(reinterpret_cast<void (*)(void*)>(userMa),
+    _thread* userM = _thread::createThread(reinterpret_cast<void (*)(void*)>(userMain),
                                               static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
                                            nullptr);
     _thread* idleT = _thread::createThread(reinterpret_cast<void (*)(void *)>(idle), static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
@@ -83,10 +65,10 @@ int main() {
     while(!console->outEmpty()); //OBEZBEDI DA SE SVE upise PRE KRAJA
     userM->~_thread();
     //OVAJ DEO MORA DA BI SE LEPO ZAVRSIO KERNEL DA NE PRIHVATA PREKIDE I SLICNO, jer tajmer
+    mainT->setFinished(true);
+    mainT->setMain(true);
     Riscv::mc_sie(Riscv::SIE_SEIE);
     Riscv::mc_sie(Riscv::SIE_SSIE);
     Riscv::w_sip(0);
-    mainT->setFinished(true);
-    mainT->setMain(true);
     return 0;
 }
