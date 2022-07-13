@@ -62,9 +62,9 @@ int main() {
         thread_dispatch();
     }
 
-   // _console* console = _console::getInstance();
-   // while(!console->inEmpty()); //OBEZBEDI DA SE SVE ISPISE PRE KRAJA
-    //while(!console->outEmpty()); //OBEZBEDI DA SE SVE upise PRE KRAJA
+    _console* console = _console::getInstance();
+    while(!console->inEmpty()); //OBEZBEDI DA SE SVE ISPISE PRE KRAJA
+    while(!console->outEmpty()); //OBEZBEDI DA SE SVE upise PRE KRAJA
     userM->~_thread();
     //OVAJ DEO MORA DA BI SE LEPO ZAVRSIO KERNEL DA NE PRIHVATA PREKIDE I SLICNO, jer tajmer
     mainT->setFinished(true);
