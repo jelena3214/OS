@@ -59,7 +59,7 @@ int main() {
     Riscv::ms_sie(Riscv::SIE_SSIE);
 
     while(!userM->isFinished());
-    while(1){
+    while(1){ //KAKO BEZ OVOGA?
         thread_dispatch();
     }
 
