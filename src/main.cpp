@@ -59,8 +59,9 @@ int main() {
     Riscv::ms_sie(Riscv::SIE_SSIE);
 
     while(!userM->isFinished());
-    while(!idleT->isFinished());
-
+    while(1){
+        thread_dispatch();
+    }
 
     _console* console = _console::getInstance();
     while(!console->inEmpty()); //OBEZBEDI DA SE SVE ISPISE PRE KRAJA
