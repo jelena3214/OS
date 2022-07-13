@@ -23,7 +23,7 @@ void producerKeyboard(void *arg) {
 
     int key;
     int i = 0;
-    while ((key = getc()) != 0x1b) {
+    while ((key = getc()) != 0x2E) { //zavrsava se na tacku, KAKO NA ESC?
         data->buffer->put(key);
         i++;
 
