@@ -3,7 +3,7 @@
 //
 
 #include "../h/_console.hpp"
-#include "../h/print.hpp"
+
 _console* _console::instance = nullptr;
 
 void *_console::printingThread(void *p) {
