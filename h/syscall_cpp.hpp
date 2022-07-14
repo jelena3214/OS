@@ -43,11 +43,11 @@ class PeriodicThread : public Thread {
         protected:
         PeriodicThread (time_t period);
         virtual void periodicActivation () {}
-};
+};*/
 class Console {
         public:
         static char getc ();
         static void putc (char);
-};*/
+};
 
 #endif //PROJECT_BASE_SYSCALL_CPP_HPP
