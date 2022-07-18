@@ -8,8 +8,8 @@ _console* _console::instance = nullptr;
 
 void *_console::printingThread(void *p) {
     while(1){
+        _console* console = _console::getInstance();
         while(*(volatile char*)CONSOLE_STATUS & CONSOLE_TX_STATUS_BIT){
-            _console* console = _console::getInstance();
             char c = console->inputBuffer->get();
             volatile uint64* const reg = (volatile uint64 *const)CONSOLE_TX_DATA;
             *reg = c;
@@ -18,16 +18,12 @@ void *_console::printingThread(void *p) {
 }
 
 void _console::console_handler() {
-    uint64 cause = plic_claim();
-    if(cause == CONSOLE_IRQ){
-        while(*(volatile char*)CONSOLE_STATUS & CONSOLE_RX_STATUS_BIT){
-            _console* console = _console::getInstance();
-            volatile char c = *(volatile char*)(CONSOLE_RX_DATA);
-            if(c == '\r')c = '\n';
-            console->outputBuffer->put(c);
-        }
+    _console* console = _console::getInstance();
+    while(*(volatile char*)CONSOLE_STATUS & CONSOLE_RX_STATUS_BIT){
+        volatile char c = *(volatile char*)(CONSOLE_RX_DATA);
+        if(c == '\r')c = '\n';
+        console->outputBuffer->put(c);
     }
-    plic_complete(cause);
 }
 
 bool _console::outEmpty() {

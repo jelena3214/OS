@@ -4,6 +4,7 @@
 
 #include "../h/kbuffer.hpp"
 #include "../h/print.hpp"
+#include "../h/_console.hpp"
 
 //Da li je potrebno mutex 2 puta?
 
@@ -13,7 +14,6 @@ void kbuffer::put(int val) {
     mutexTail->wait();
     buffer[tail] = val;
     tail = (tail + 1) % cap;
-
 
     mutexTail->signal();
 
