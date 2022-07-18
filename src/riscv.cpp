@@ -10,9 +10,13 @@
 //TODO dodati ESC ZNAK!, getc prekidna rutina
 
 void Riscv::handleSupervisorTrap(){
-    volatile uint64 ksstatus;
-    __asm__ volatile ("csrr %[sstatus], sstatus" : [sstatus] "=r"(ksstatus));
-    __asm__ volatile ("csrc sstatus, %[mask]" : : [mask] "r"((1 << 1)));
+    //volatile uint64 ksstatus;
+    // TODO CSRRW, procitati iz rd-a
+    //volatile int mask = 1 << 1;
+    //__asm__ volatile ("csrrc sstatus, %[mask]" : : [mask] "r" (mask));
+    //__asm__ volatile("mv %0, rd" : "=r"(ksstatus));
+//__asm__ volatile ("csrr %[sstatus], sstatus" : [sstatus] "=r"(ksstatus));
+    //__asm__ volatile ("csrc sstatus, %[mask]" : : [mask] "r"((1 << 1)));
 
     volatile uint64 code, param1, param2, param3, param4;
     asm("mv %0, x10" : "=r"(code));
@@ -26,7 +30,8 @@ void Riscv::handleSupervisorTrap(){
     {
         // interrupt: no; cause code: environment call from U-mode(8) or S-mode(9)
         volatile uint64 sepc = Riscv::r_sepc() + 4;
-        //volatile uint64 sstatus = ksstatus;
+        uint64 volatile sstatus;
+        __asm__ volatile ("csrr %[sstatus], sstatus" : [sstatus] "=r"(sstatus));
 
         MemoryAllocator &mem = MemoryAllocator::getInstance();
         switch(code) {
@@ -81,8 +86,8 @@ void Riscv::handleSupervisorTrap(){
             {
                 __asm__ volatile ("mv x10, %0" : : "r"(1));
                 __asm__ volatile("sd x10, 80(fp)");
-                ksstatus &= ~(1 << 8); //clear spp
-                ksstatus |= (1 << 5); //set spie
+                sstatus &= ~(1 << 8); //clear spp
+                sstatus |= (1 << 5); //set spie
 
                 Riscv::ms_sie(Riscv::SIE_SEIE);
                 Riscv::ms_sie(Riscv::SIE_SSIE);
@@ -154,18 +159,21 @@ void Riscv::handleSupervisorTrap(){
         }
         _thread::timeSliceCounter = 0;
         _thread::dispatch();
-        Riscv::w_sstatus(ksstatus);
+
+        Riscv::w_sstatus(sstatus);
         Riscv::w_sepc(sepc);
+        //Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
     } else if (scause == 0x8000000000000001UL)
     {
         _thread::timeSliceCounter++;
         if (_thread::timeSliceCounter >= _thread::running->getTimeSlice())
         {
             volatile uint64 sepc = r_sepc();
-            //volatile uint64 sstatus = r_sstatus();
+            volatile uint64 sstatus = r_sstatus();
             _thread::timeSliceCounter = 0;
             _thread::dispatch();
-            w_sstatus(ksstatus);
+
+            w_sstatus(sstatus);
             w_sepc(sepc);
         }
         _thread::sleepQueue.decTime();
@@ -176,24 +184,18 @@ void Riscv::handleSupervisorTrap(){
         }
 
         mc_sip(SIP_SSIP); //cistimo bit koji predstavlja zahtev za softverskim prekidom
-        Riscv::ms_sstatus(ksstatus & Riscv::SSTATUS_SIE ? Riscv::SSTATUS_SIE : 0); //OVO JE LOCK ZA KERNEL KOD
+        //Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
     } else if (scause == 0x8000000000000009UL)
     {
         // interrupt: yes; cause code: supervisor external interrupt (PLIC; could be keyboard)
-        uint64 sepc = Riscv::r_sepc() + 4;
         _console::console_handler();
         mc_sip(SIP_SEIP);
         //printString("spoljaski hardverski\n");
-        Riscv::w_sstatus(ksstatus);
-        Riscv::w_sepc(sepc);
-        Riscv::ms_sstatus(ksstatus & Riscv::SSTATUS_SIE ? Riscv::SSTATUS_SIE : 0); //OVO JE LOCK ZA KERNEL KOD
+        //Riscv::ms_sstatus(Riscv::SSTATUS_SIE); //OVO JE LOCK ZA KERNEL KOD
     } else {
         // unexpected trap cause
-        uint64 sepc = Riscv::r_sepc() + 4;
-        //uint64 sstatus = Riscv::r_sstatus();
-        Riscv::w_sstatus(ksstatus);
-        Riscv::w_sepc(sepc);
         printS("\nNZM\n");
+        printInteger(scause);
     }
 
 }

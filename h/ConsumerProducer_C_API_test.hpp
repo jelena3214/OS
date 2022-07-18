@@ -44,6 +44,7 @@ void producer(void *arg) {
     int i = 0;
     while (!threadEnd) {
         data->buffer->put(data->id + '0');
+        time_sleep(50);
         i++;
 
         if (i % (10 * data->id) == 0) {

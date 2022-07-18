@@ -23,6 +23,7 @@ void _console::console_handler() {
         while(*(volatile char*)CONSOLE_STATUS & CONSOLE_RX_STATUS_BIT){
             _console* console = _console::getInstance();
             volatile char c = *(volatile char*)(CONSOLE_RX_DATA);
+            if(c == '\r')c = '\n';
             console->outputBuffer->put(c);
         }
     }

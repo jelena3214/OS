@@ -38,6 +38,8 @@ int _sem::signal() {
     return 0; //success
 }
 
+// TODO izgleda sumljivo proveriti
+// zasto nije while (_thread *tmp = threadQueue.deleteNode()) ?
 int _sem::close() {
     while(1){
         _thread* tmp = threadQueue.deleteNode();

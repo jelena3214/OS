@@ -36,6 +36,9 @@ void Buffer::put(int val) {
     sem_wait(mutexTail);
     buffer[tail] = val;
     tail = (tail + 1) % cap;
+
+
+
     sem_signal(mutexTail);
 
     sem_signal(itemAvailable);

@@ -13,6 +13,8 @@ void kbuffer::put(int val) {
     mutexTail->wait();
     buffer[tail] = val;
     tail = (tail + 1) % cap;
+
+
     mutexTail->signal();
 
     itemAvailable->signal();
