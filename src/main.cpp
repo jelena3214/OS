@@ -17,7 +17,6 @@ void* idle(void* p){
 }
 
 void* userMa(void* p){
-    userRegime();
     putc('a');
     putc('b');
     putc('s');
@@ -32,7 +31,11 @@ void* userMa(void* p){
     return p;
 }
 
-
+void* mainWrapper(void* p){
+    userRegime();
+    userMa(nullptr);
+    return p;
+}
 
 int main() {
     Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
@@ -43,7 +46,7 @@ int main() {
 
 
     MemoryAllocator& mem = MemoryAllocator::getInstance();
-    _thread* userM = _thread::createThread(reinterpret_cast<void (*)(void*)>(userMa),
+    _thread* userM = _thread::createThread(reinterpret_cast<void (*)(void*)>(mainWrapper),
                                               static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
                                            nullptr);
     _thread* idleT = _thread::createThread(reinterpret_cast<void (*)(void *)>(idle), static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
