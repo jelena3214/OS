@@ -15,14 +15,19 @@ void* idle(void* p){
         thread_dispatch();
     }
 }
+
 void* userMa(void* p){
     userRegime();
     putc('a');
     putc('b');
     putc('s');
-    char s ;
-    while((s = getc()) != 0xa){
+    char s  = 0;
+    while(1){
+        s = getc();
         putc(s);
+        time_sleep(30);
+        //putc(s);
+        //printInteger(s);
     }
     return p;
 }
@@ -38,7 +43,7 @@ int main() {
 
 
     MemoryAllocator& mem = MemoryAllocator::getInstance();
-    _thread* userM = _thread::createThread(reinterpret_cast<void (*)(void*)>(userMain),
+    _thread* userM = _thread::createThread(reinterpret_cast<void (*)(void*)>(userMa),
                                               static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
                                            nullptr);
     _thread* idleT = _thread::createThread(reinterpret_cast<void (*)(void *)>(idle), static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),

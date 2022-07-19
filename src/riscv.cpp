@@ -192,8 +192,9 @@ void Riscv::handleSupervisorTrap(){
         if(cause == CONSOLE_IRQ){
             _console::console_handler();
         }
-        mc_sip(SIP_SEIP);
         plic_complete(cause);
+        mc_sip(SIP_SEIP);
+
     } else {
         // unexpected trap cause
         printS("\nNZM\n");
