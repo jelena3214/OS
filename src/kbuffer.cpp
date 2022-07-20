@@ -18,8 +18,6 @@ void kbuffer::put(int val) {
     mutexTail->signal();
 
     itemAvailable->signal();
-
-
 }
 
 int kbuffer::get() {

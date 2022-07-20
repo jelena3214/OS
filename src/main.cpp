@@ -6,7 +6,7 @@
 #include "../h/syscall_cpp.hpp"
 #include "../h/syscall_c.hpp"
 #include "../h/_thread.hpp"
-#include "../h/print.hpp"
+#include "../h/printing.hpp"
 
 extern void userMain();
 
@@ -20,13 +20,14 @@ void* userMa(void* p){
     putc('a');
     putc('b');
     putc('s');
-    char s  = 0;
+    printString("jes");
+    putc('_');
     while(1){
-        s = getc();
-        putc(s);
-        //putc(s);
-        //printInteger(s);
+        char c = getc();
+        putc(c);
+        putc(c);
     }
+
     return p;
 }
 
