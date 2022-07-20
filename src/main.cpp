@@ -24,7 +24,6 @@ void* userMa(void* p){
     while(1){
         s = getc();
         putc(s);
-        time_sleep(30);
         //putc(s);
         //printInteger(s);
     }

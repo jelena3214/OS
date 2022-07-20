@@ -38,12 +38,24 @@ public:
 private:
         sem_t myHandle;
 };
-/*
+
+//TODO da li sme da se doda ovako polja, i da li je okej da se ovako run preklopi?
 class PeriodicThread : public Thread {
-        protected:
-        PeriodicThread (time_t period);
+protected:
+        PeriodicThread (time_t period): Thread(){
+            time = period;
+        }
         virtual void periodicActivation () {}
-};*/
+private:
+    void run() override{
+        while(1){
+            periodicActivation();
+            sleep(time);
+        }
+    }
+    time_t time;
+};
+
 class Console {
         public:
         static char getc ();

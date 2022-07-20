@@ -10,11 +10,10 @@ void *_console::printingThread(void *p) {
     _console* console = _console::getInstance();
     while(1){
         while(*(volatile char*)CONSOLE_STATUS & CONSOLE_TX_STATUS_BIT){
-            char c = console->inputBuffer->get();
+            volatile char c = console->inputBuffer->get();
             volatile uint64* const reg = (volatile uint64 *const)CONSOLE_TX_DATA;
             *reg = c;
         }
-        _thread::dispatch();
     }
 }
 
