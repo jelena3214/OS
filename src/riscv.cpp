@@ -95,10 +95,14 @@ void Riscv::handleSupervisorTrap(){
             }
             case 0x31:{
                 time_t time = param1;
-                volatile int ret = _thread::running->sleepQueue.put(_thread::running, time);
-                if(ret == 0){
-                    _thread::running->setSleeping(true);
+                volatile int ret = 0;
+                if(time > 0) {
+                    ret = _thread::running->sleepQueue.put(_thread::running, time);
+                    if (ret == 0) {
+                        _thread::running->setSleeping(true);
+                    }
                 }
+                if(time < 0)ret = -1; //error
                 __asm__ volatile ("mv x10, %0" : : "r"(ret));
                 __asm__ volatile("sd x10, 80(fp)");
                 break;

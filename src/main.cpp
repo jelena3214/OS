@@ -49,19 +49,20 @@ int main() {
     _thread* userM = _thread::createThread(reinterpret_cast<void (*)(void*)>(mainWrapper),
                                               static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
                                            nullptr);
-    _thread* idleT = _thread::createThread(reinterpret_cast<void (*)(void *)>(idle), static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
-                                           nullptr);
+    //_thread* idleT = _thread::createThread(reinterpret_cast<void (*)(void *)>(idle), static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
+                                           //nullptr);
     _thread* mainT = _thread::createThread(nullptr, nullptr, nullptr);
 
     _thread* inputT = _thread::createThread(reinterpret_cast<void (*)(void *)>(_console::printingThread), static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
                                             nullptr);
 
-    idleT->startThread();
+    //idleT->startThread();
     mainT->startThread();
     userM->startThread();
     inputT->startThread();
 
     _thread::running = mainT;
+    mainT->setMain(true);
 
     Riscv::ms_sie(Riscv::SIE_SEIE);
     Riscv::ms_sie(Riscv::SIE_SSIE);
@@ -77,7 +78,6 @@ int main() {
     userM->~_thread();
     //OVAJ DEO MORA DA BI SE LEPO ZAVRSIO KERNEL DA NE PRIHVATA PREKIDE I SLICNO, jer tajmer
     mainT->setFinished(true);
-    mainT->setMain(true);
     Riscv::mc_sie(Riscv::SIE_SEIE);
     Riscv::mc_sie(Riscv::SIE_SSIE);
     Riscv::w_sip(0);
