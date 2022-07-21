@@ -17,23 +17,23 @@ void* idle(void* p){
 }
 
 void* userMa(void* p){
+    char input[30];
     putc('a');
     putc('b');
     putc('s');
     printString("jes");
+    char s = getc();
+    putc(s);
+    getString(input, 30); //ZASTO KAD POZOVEM NJIHOV GETSTRING NE ISPISUJE DOK KUCAM NA KONZOLI?
     putc('_');
-    while(1){
-        char c = getc();
-        putc(c);
-        putc(c);
-    }
+    printString(input);
 
     return p;
 }
 
 void* mainWrapper(void* p){
     userRegime();
-    userMa(nullptr);
+    userMain();
     return p;
 }
 
