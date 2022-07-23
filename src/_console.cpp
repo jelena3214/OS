@@ -27,8 +27,7 @@ void _console::console_handler() {
 }
 
 bool _console::outEmpty() {
-    volatile bool is = outputBuffer->empty();
-    return is;
+    return outputBuffer->empty();;
 }
 
 bool _console::inEmpty() {

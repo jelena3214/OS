@@ -9,12 +9,6 @@
 
 class kbuffer {
 public:
-    /*kbuffer(int cap = BUFFER_SIZE): mutexHead(1), mutexTail(1), itemAvailable(0), spaceAvailable(cap){
-        this->cap = cap;
-        head = tail = 0;
-        MemoryAllocator& mem = MemoryAllocator::getInstance();
-        buffer = static_cast<int *>(mem.allocate(sizeof(int) * cap));
-    }*/
 
     static kbuffer* create_buffer(int capa = BUFFER_SIZE){
         MemoryAllocator& mem = MemoryAllocator::getInstance();

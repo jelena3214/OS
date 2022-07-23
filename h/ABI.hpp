@@ -12,7 +12,7 @@ using Function = void (*)(void*);
 struct FunctionParameters{
     uint64 code;
     void* first;
-    Function second;
+    Function second; //na ovaj nacin prenosimo funkciju za nit
     void* third;
     void* fourth;
 };

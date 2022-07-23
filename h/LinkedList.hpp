@@ -24,8 +24,6 @@ public:
     _thread* deleteNode();
 
     friend class _sem;
-
-    void printList();
 };
 
 

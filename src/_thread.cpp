@@ -23,6 +23,9 @@ void _thread::dispatch()
     }
 
     _thread* newT = Scheduler::get();
+
+    //TODO vidi da li ovo treba, jer logicki nit kada se uspava ona nije u scheduleru i nije zavrsila kao je u redu
+    //ovo za main isto?
     if((newT->isMain && newT->finished) || newT->finished || newT->sleeping){
         running = Scheduler::get();
     }else{

@@ -9,6 +9,8 @@
 #include "../h/Scheduler.hpp"
 #include "../h/sleepList.hpp"
 
+//TODO: konstruktor?
+
 class _thread {
 public:
     ~_thread() {
@@ -47,20 +49,7 @@ public:
 
     static SleepList sleepQueue;
 private:
-    _thread(Body body, uint64* stackAddr) :
-    body(body),
-            stack(body != nullptr ? stackAddr : nullptr),
-    context({(uint64) &threadWrapper,
-                stack != nullptr ? (uint64) &stack[STACK_SIZE] : 0
-    }),
-    timeSlice(TIME_SLICE),
-            finished(false)
-    {
-        if (body != nullptr) { Scheduler::put(this); }
-    }
-
     void deallocateStack();
-
 
     struct Context
     {

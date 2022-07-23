@@ -29,7 +29,6 @@ public:
     bool inEmpty();
 
     ~_console();
-
 };
 
 

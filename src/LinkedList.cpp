@@ -3,7 +3,6 @@
 //
 
 #include "../h/LinkedList.hpp"
-#include "../h/print.hpp"
 
 void LinkedList::insertNode(_thread* data) {
     MemoryAllocator &mem = MemoryAllocator::getInstance();
@@ -34,11 +33,3 @@ _thread* LinkedList::deleteNode() {
     return ret;
 }
 
-void LinkedList::printList() {
-    Node* p = head;
-    while(p){
-        //printInteger((uint64)p->data);
-        //printString("\n");
-        p = p->next;
-    }
-}

@@ -49,14 +49,15 @@ int main() {
     _thread* userM = _thread::createThread(reinterpret_cast<void (*)(void*)>(mainWrapper),
                                               static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
                                            nullptr);
-    //_thread* idleT = _thread::createThread(reinterpret_cast<void (*)(void *)>(idle), static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
-                                           //nullptr);
+    _thread* idleT = _thread::createThread(reinterpret_cast<void (*)(void *)>(idle), static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
+                                           nullptr);
     _thread* mainT = _thread::createThread(nullptr, nullptr, nullptr);
 
     _thread* inputT = _thread::createThread(reinterpret_cast<void (*)(void *)>(_console::printingThread), static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
                                             nullptr);
 
-    //idleT->startThread();
+    //idle je potreban da postoji uvek neka nit u scheduleru spremna
+    idleT->startThread();
     mainT->startThread();
     userM->startThread();
     inputT->startThread();
@@ -64,13 +65,13 @@ int main() {
     _thread::running = mainT;
     mainT->setMain(true);
 
+    //omogucavamo prekide
     Riscv::ms_sie(Riscv::SIE_SEIE);
     Riscv::ms_sie(Riscv::SIE_SSIE);
 
     while(!userM->isFinished()){
         thread_dispatch();
     }
-
 
     _console* console = _console::getInstance();
     while(!console->inEmpty()); //OBEZBEDI DA SE SVE ISPISE PRE KRAJA

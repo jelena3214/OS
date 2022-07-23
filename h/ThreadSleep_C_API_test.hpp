@@ -7,7 +7,7 @@
 
 #include "../h/syscall_c.hpp"
 
-#include "../h/print.hpp"
+#include "../h/printing.hpp"
 
 bool finished[2];
 
@@ -17,7 +17,7 @@ void sleepyRun(void *arg) {
     while (--i > 0) {
 
         printString("Hello ");
-        printInteger(sleep_time);
+        printInt(sleep_time);
         printString(" !\n");
         time_sleep(sleep_time);
     }

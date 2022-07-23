@@ -2,7 +2,6 @@
 // Created by os on 5/23/22.
 //
 #include "../h/syscall_cpp.hpp"
-#include "../h/print.hpp"
 void* operator new (size_t y){
     return mem_alloc(y);
 }
@@ -24,12 +23,11 @@ Thread::Thread(void (*body)(void *), void *arg) {
 }
 
 Thread::~Thread() {
-    //thread_exit();
     thread_deallocate(&myHandle);
 }
 
 int Thread::start() {
-    return thread_start(&myHandle); //MOZE OVAKO?
+    return thread_start(&myHandle);
 }
 
 void Thread::dispatch() {
@@ -56,7 +54,7 @@ Semaphore::Semaphore(unsigned int init) {
 
 Semaphore::~Semaphore() {
     sem_close(myHandle);
-    sem_deallocate(&myHandle); //treba ovako?
+    sem_deallocate(&myHandle);
 }
 
 int Semaphore::wait() {

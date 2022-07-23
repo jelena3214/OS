@@ -7,6 +7,7 @@
 #include "../lib/hw.h"
 #include "../h/MemoryAllocator.hpp"
 #include "../h/Scheduler.hpp"
+
 class _thread;
 typedef unsigned long time_t;
 class SleepList{
@@ -22,8 +23,6 @@ public:
     int put(_thread* th, time_t t);
 
     _thread* get();
-
-    void printSleepList();
 
     void decTime();
 };

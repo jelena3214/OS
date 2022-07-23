@@ -3,21 +3,12 @@
 //
 
 #include "../h/riscv.hpp"
-#include "../h/print.hpp"
+#include "../h/printing.hpp"
 #include "../lib/console.h"
 
 
-//TODO dodati ESC ZNAK!, getc prekidna rutina
 
 void Riscv::handleSupervisorTrap(){
-    //volatile uint64 ksstatus;
-    // TODO CSRRW, procitati iz rd-a
-    //volatile int mask = 1 << 1;
-    //__asm__ volatile ("csrrc sstatus, %[mask]" : : [mask] "r" (mask));
-    //__asm__ volatile("mv %0, rd" : "=r"(ksstatus));
-//__asm__ volatile ("csrr %[sstatus], sstatus" : [sstatus] "=r"(ksstatus));
-    //__asm__ volatile ("csrc sstatus, %[mask]" : : [mask] "r"((1 << 1)));
-
     volatile uint64 code, param1, param2, param3, param4;
     asm("mv %0, x10" : "=r"(code));
     asm("mv %0, x11" : "=r"(param1));
@@ -166,7 +157,6 @@ void Riscv::handleSupervisorTrap(){
 
         Riscv::w_sstatus(sstatus);
         Riscv::w_sepc(sepc);
-        //Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
     } else if (scause == 0x8000000000000001UL)
     {
         _thread::timeSliceCounter++;
@@ -188,7 +178,6 @@ void Riscv::handleSupervisorTrap(){
         }
 
         mc_sip(SIP_SSIP); //cistimo bit koji predstavlja zahtev za softverskim prekidom
-        //Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
     } else if (scause == 0x8000000000000009UL)
     {
         // interrupt: yes; cause code: supervisor external interrupt (PLIC; could be keyboard)
@@ -201,8 +190,8 @@ void Riscv::handleSupervisorTrap(){
 
     } else {
         // unexpected trap cause
-        printS("\nNZM\n");
-        printInteger(scause);
+        printString("\nNZM\n");
+        printInt(scause);
     }
 
 }

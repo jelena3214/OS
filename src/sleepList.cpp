@@ -56,13 +56,3 @@ _thread* SleepList::get(){
     }
     return nullptr;
 }
-
-void SleepList::printSleepList(){
-    Node* p = head;
-    //printString("LIST uspavanih\n");
-    while(p){
-        //printInteger((time_t)p->time);
-        //printString("\n");
-        p = p->next;
-    }
-}

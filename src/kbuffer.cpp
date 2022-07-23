@@ -3,13 +3,11 @@
 //
 
 #include "../h/kbuffer.hpp"
-#include "../h/print.hpp"
 #include "../h/_console.hpp"
 
-//Da li je potrebno mutex 2 puta?
+//TODO Da li je potrebno mutex 2 puta? Jer samo jedna nit stavlja i jedna uzima
 
 void kbuffer::put(int val) {
-
     spaceAvailable->wait();
     mutexTail->wait();
     buffer[tail] = val;
