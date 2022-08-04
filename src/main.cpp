@@ -16,24 +16,26 @@ void* idle(void* p){
     }
 }
 
-void* userMa(void* p){
-    char input[30];
-    putc('a');
-    putc('b');
-    putc('s');
-    printString("jes");
-    char s = getc();
-    putc(s);
-    getString(input, 30); //ZASTO KAD POZOVEM NJIHOV GETSTRING NE ISPISUJE DOK KUCAM NA KONZOLI?
-    putc('_');
-    printString(input);
+class Moja: public PeriodicThread{
+public:
+    Moja(time_t v): PeriodicThread(v){};
 
+    void periodicActivation() override{
+        putc('j');
+    }
+
+};
+
+void* userMa(void* p){
+    Moja* m = new Moja(2);
+    m->start();
+    while(1){}
     return p;
 }
 
 void* mainWrapper(void* p){
     userRegime();
-    userMain();
+    userMa(p);
     return p;
 }
 
