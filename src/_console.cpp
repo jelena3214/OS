@@ -21,7 +21,7 @@ void _console::console_handler() {
     _console* console = _console::getInstance();
     while(*(volatile char*)CONSOLE_STATUS & CONSOLE_RX_STATUS_BIT){
         volatile char c = *(volatile char*)(CONSOLE_RX_DATA);
-        if(c == '\r')c = '\n';
+        if(c == '\r')c = '\n'; //jer pritiskanjem entera prepozna samo \r karakter
         console->outputBuffer->put(c);
     }
 }

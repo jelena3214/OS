@@ -32,7 +32,6 @@ int _sem::wait() {
 int _sem::signal() {
     if(done)return -1;
     if(++val <= 0){
-        //TODO da li proveravati da li je nit zavrsila pa je staviti u scheduler?
         _thread* th  = threadQueue.deleteNode();
         if(!th->isFinished())Scheduler::put(th);
     }

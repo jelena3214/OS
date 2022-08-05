@@ -87,7 +87,7 @@ int MemoryAllocator::deallocate(void *block) {
     Block* cur = nullptr;
     size_t startAddr = (size_t)HEAP_START_ADDR;
     if(!allocatedMemHead || ((size_t)block-headerSize < startAddr || (size_t)block - headerSize > (size_t)HEAP_END_ADDR) ){
-        return 0;
+        return -1; // adresa ne pripada opsegu za alokaciju
     }
     if(!freeMemHead || (char*)block - headerSize < (char*)freeMemHead){
         cur = 0;
@@ -106,7 +106,7 @@ int MemoryAllocator::deallocate(void *block) {
 
     tryToJoin(newSeg);
     tryToJoin(cur);
-    return 1;
+    return 0; //success
 }
 
 int MemoryAllocator::tryToJoin(Block *cur) {

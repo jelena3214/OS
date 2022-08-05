@@ -9,8 +9,6 @@
 #include "../h/Scheduler.hpp"
 #include "../h/sleepList.hpp"
 
-//TODO: konstruktor?
-
 class _thread {
 public:
     ~_thread() {
@@ -18,7 +16,6 @@ public:
         MemoryAllocator& mem = MemoryAllocator::getInstance();
         if(stack)deallocateStack();
         mem.deallocate(this);
-
     }
 
     bool isFinished() const { return finished; }

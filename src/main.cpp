@@ -35,7 +35,7 @@ void* userMa(void* p){
 
 void* mainWrapper(void* p){
     userRegime();
-    userMa(p);
+    userMain();
     return p;
 }
 

@@ -29,7 +29,7 @@ _thread* LinkedList::deleteNode() {
     }
     head = head->next;
     _thread* ret = temp1->data;
-    mem.deallocate(temp1);
+    if(mem.deallocate(temp1) < 0) return nullptr;
     return ret;
 }
 

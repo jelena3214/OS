@@ -19,16 +19,18 @@ void kbuffer::put(int val) {
 }
 
 int kbuffer::get() {
-    itemAvailable->wait();
+    int r = itemAvailable->wait();
 
-    mutexHead->wait();
+    r = mutexHead->wait();
 
     int ret = buffer[head];
     head = (head + 1) % cap;
 
-    mutexHead->signal();
+    r = mutexHead->signal();
 
-    spaceAvailable->signal();
+    r = spaceAvailable->signal();
+
+    if(r < 0) return r;
 
     return ret;
 }

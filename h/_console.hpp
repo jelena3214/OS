@@ -15,12 +15,14 @@ private:
     _console() {}
     static _console* instance;
 public:
+    //stvaranje instance konzole
     static _console* getInstance();
 
     static void console_handler();
 
     friend class Riscv;
 
+    //funkcija koja salje karaktere kontoleru
     static void* printingThread(void* p);
 
     _console(const _console&) = delete;

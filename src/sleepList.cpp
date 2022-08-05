@@ -18,8 +18,9 @@ int SleepList::put(_thread* th, time_t t){
             time_t newNodeTime = t - firstTime;
             Node *p = head->next;
             Node *prev = head;
-            while(p && p->time < newNodeTime){
+            while(p && p->time <= newNodeTime){
                 prev = p;
+                newNodeTime -= p->time;
                 p = p->next;
             }
             prev->next = newNode;

@@ -39,11 +39,11 @@ void Riscv::handleSupervisorTrap(){
                 break;
             }
             case 0x11:{
-                volatile uint64 ret = 0;
+                volatile uint64 ret = -1;
                 _thread* newThread = _thread::createThread(reinterpret_cast<void (*)(void *)>(param2), (uint64 *) param4,
                                                            (void *) param3);
                 if(newThread != nullptr){
-                    ret = 1;
+                    ret = 0; //success
                 }
                 uint64** handlePlace = (uint64 **) param1;
                 *handlePlace = reinterpret_cast<uint64 *>(newThread);
@@ -64,7 +64,11 @@ void Riscv::handleSupervisorTrap(){
                 break;
             }
             case 0x12: {
+                uint64 ret = 0;
                 _thread::running->setFinished(true);
+                if(!_thread::running->finished) ret = -1;
+                __asm__ volatile ("mv x10, %0" : : "r"(ret));
+                __asm__ volatile("sd x10, 80(fp)");
                 break;
             }
             case 0x55:{
@@ -99,10 +103,10 @@ void Riscv::handleSupervisorTrap(){
                 break;
             }
             case 0x21:{
-                volatile uint64 ret = 0;
+                volatile uint64 ret = -1;
                 _sem* newSemaphore = _sem::create_semaphore(param3);
                 if(newSemaphore != nullptr){
-                    ret = 1;
+                    ret = 0; //success
                 }
                 uint64** handlePlace = (uint64 **) param1;
                 *handlePlace = reinterpret_cast<uint64 *>(newSemaphore);
@@ -140,6 +144,7 @@ void Riscv::handleSupervisorTrap(){
             case 0x41:{
                 _console* console = _console::getInstance();
                 char c = console->outputBuffer->get();
+                if(c == -1) c = EOF; //error
                 __asm__ volatile ("mv x10, %0" : : "r"((uint64)c));
                 __asm__ volatile("sd x10, 80(fp)");
                 break;
