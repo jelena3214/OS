@@ -72,3 +72,4 @@ char Console::getc() {
 void Console::putc(char c) {
     ::putc(c);
 }
+

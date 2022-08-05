@@ -9,12 +9,13 @@
 
 
 void Riscv::handleSupervisorTrap(){
-    volatile uint64 code, param1, param2, param3, param4;
+    volatile uint64 code, param1, param2, param3, param4, param5;
     asm("mv %0, x10" : "=r"(code));
     asm("mv %0, x11" : "=r"(param1));
     asm("mv %0, x12" : "=r"(param2));
     asm("mv %0, x13" : "=r"(param3));
     asm("mv %0, x14" : "=r"(param4));
+    asm("mv %0, x15" : "=r"(param5));
 
     uint64 scause = Riscv::r_scause();
     if (scause == 0x0000000000000008UL || scause == 0x0000000000000009UL)
