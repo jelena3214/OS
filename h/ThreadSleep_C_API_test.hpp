@@ -31,7 +31,6 @@ void testSleeping() {
 
     for (int i = 0; i < sleepy_thread_count; i++) {
         thread_create(&sleepyThread[i], sleepyRun, sleep_times + i);
-        thread_start(&sleepyThread[i]);
     }
 
     while (!(finished[0] && finished[1])) {}

@@ -25,6 +25,12 @@ int thread_create(
         void *arg
 );
 
+int thread_init_handle( //zbog Thread cpp apija koji ima poseban start od kreiranja niti
+        thread_t *handle,
+        void(*start_routine)(void *),
+        void *arg
+);
+
 void set_period(thread_t *handle, time_t period);
 
 void sleep_periodic_thread(thread_t* handle);

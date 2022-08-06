@@ -19,7 +19,7 @@ void operator delete[](void *p) noexcept{
 }
 
 Thread::Thread(void (*body)(void *), void *arg) {
-    thread_create(&myHandle, body, arg);
+    thread_init_handle(&myHandle, body, arg);
 }
 
 Thread::~Thread() {
@@ -45,7 +45,7 @@ void wrapper(void* thread){
 }
 
 Thread::Thread() {
-    thread_create(&myHandle, wrapper, this);//create thread za run funkciju, a za run neki wrapper izvan klase?
+    thread_init_handle(&myHandle, wrapper, this);//create thread za run funkciju, a za run neki wrapper izvan klase
 }
 
 void periodic_init(void* thread, time_t time) {

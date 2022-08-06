@@ -4,9 +4,6 @@
 
 #include "../h/riscv.hpp"
 #include "../h/printing.hpp"
-#include "../lib/console.h"
-
-
 
 void Riscv::handleSupervisorTrap(){
     volatile uint64 code, param1, param2, param3, param4, param5;
@@ -157,14 +154,14 @@ void Riscv::handleSupervisorTrap(){
                 console->inputBuffer->put(cc);
                 break;
             }
-            case 0x88:{
+            case 0x88:{ //init periode za periodic thread
                 uint64** thr = (uint64**)param1;
                 _thread* thread = (_thread *) *thr;
                 time_t time = param3;
                 thread->set_time(time);
                 break;
             }
-            case 0x99:{
+            case 0x99:{ //sleep za periodic thread
                 uint64** thr = (uint64**)param1;
                 _thread* thread = (_thread *) *thr;
                 time_t time = thread->time;

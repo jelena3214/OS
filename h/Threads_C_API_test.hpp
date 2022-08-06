@@ -98,20 +98,15 @@ void Threads_C_API_test() {
     thread_t threads[4];
     thread_create(&threads[0], workerBodyA, nullptr);
     printString("ThreadA created\n");
-    thread_start(&threads[0]);
 
     thread_create(&threads[1], workerBodyB, nullptr);
     printString("ThreadB created\n");
-    thread_start(&threads[1]);
 
     thread_create(&threads[2], workerBodyC, nullptr);
     printString("ThreadC created\n");
-    thread_start(&threads[2]);
 
     thread_create(&threads[3], workerBodyD, nullptr);
     printString("ThreadD created\n");
-    thread_start(&threads[3]);
-
 
 
     while (!(finishedA && finishedB && finishedC && finishedD)) {

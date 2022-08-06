@@ -62,7 +62,7 @@ private:
     uint64 timeSlice; //broj perioda koji dobija neka nit svaki put kad joj se da procesor
     bool finished, sleeping;
     bool isMain;
-    time_t time;
+    time_t time; //perioda za periodicne niti
 
     void* arg;
 

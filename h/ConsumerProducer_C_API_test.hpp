@@ -119,7 +119,6 @@ void producerConsumer_C_API() {
     data[threadNum].buffer = buffer;
     data[threadNum].wait = waitForAll;
     thread_create(&consumerThread, consumer, data + threadNum);
-    thread_start(&consumerThread);
 
     for (int i = 0; i < threadNum; i++) {
         data[i].id = i;
@@ -129,7 +128,6 @@ void producerConsumer_C_API() {
         thread_create(threads + i,
                       i > 0 ? producer : producerKeyboard,
                       data + i);
-        thread_start(threads + i);
     }
 
     thread_dispatch();

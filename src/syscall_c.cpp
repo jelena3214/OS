@@ -32,6 +32,20 @@ int thread_create (thread_t* handle, void(*start_routine)(void*), void* arg){
     param.fourth = stackAddr;
     void* ret = syscall_handler(param);
     uint64 t = (uint64)(ret);
+    if(!t)thread_start(handle); //c api thread_create pokrene nit, ako nije doslo do greske
+    return (int)t;
+}
+
+int thread_init_handle(thread_t *handle, void(*start_routine)(void *),void *arg){ //init handle bez startovanja niti
+    struct FunctionParameters param;
+    param.code = 0x11;
+    void* stackAddr = mem_alloc(DEFAULT_STACK_SIZE*sizeof(uint64));
+    param.first = (void*)((uint64)handle);
+    param.second = start_routine;
+    param.third = arg;
+    param.fourth = stackAddr;
+    void* ret = syscall_handler(param);
+    uint64 t = (uint64)(ret);
     return (int)t;
 }
 
