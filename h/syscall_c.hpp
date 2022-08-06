@@ -25,6 +25,9 @@ int thread_create(
         void *arg
 );
 
+void set_period(thread_t *handle, time_t period);
+
+void sleep_periodic_thread(thread_t* handle);
 
 void userRegime();
 

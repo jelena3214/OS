@@ -35,6 +35,22 @@ int thread_create (thread_t* handle, void(*start_routine)(void*), void* arg){
     return (int)t;
 }
 
+void set_period(thread_t *handle, time_t period){
+    struct FunctionParameters param;
+    param.code = 0x88;
+    param.first = (void*)((uint64)handle);
+    param.third = (void*)period;
+    syscall_handler(param);
+}
+
+void sleep_periodic_thread(thread_t* handle){
+    struct FunctionParameters param;
+    param.code = 0x99;
+    param.first = (void*)((uint64)handle);
+    syscall_handler(param);
+}
+
+
 int thread_start(thread_t *handle){
     struct FunctionParameters param;
     param.code = 0x44;

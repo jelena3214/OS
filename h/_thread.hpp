@@ -32,6 +32,8 @@ public:
 
     static _thread *createThread(Body body, uint64* stackAddr, void* ar);
 
+    void set_time(time_t time);
+
     static void yield();
 
     static _thread *running;
@@ -60,7 +62,7 @@ private:
     uint64 timeSlice; //broj perioda koji dobija neka nit svaki put kad joj se da procesor
     bool finished, sleeping;
     bool isMain;
-    //time_t time;
+    time_t time;
 
     void* arg;
 

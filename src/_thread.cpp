@@ -66,3 +66,8 @@ _thread *_thread::createThread(_thread::Body body, uint64 *stackAddr, void* ar) 
     return newThread;
 }
 
+void _thread::set_time(time_t time) {
+    this->time = time;
+}
+
+

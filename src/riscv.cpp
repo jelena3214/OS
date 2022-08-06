@@ -157,6 +157,26 @@ void Riscv::handleSupervisorTrap(){
                 console->inputBuffer->put(cc);
                 break;
             }
+            case 0x88:{
+                uint64** thr = (uint64**)param1;
+                _thread* thread = (_thread *) *thr;
+                time_t time = param3;
+                thread->set_time(time);
+                break;
+            }
+            case 0x99:{
+                uint64** thr = (uint64**)param1;
+                _thread* thread = (_thread *) *thr;
+                time_t time = thread->time;
+                volatile int ret = 0;
+                if(time > 0) {
+                    ret = _thread::running->sleepQueue.put(_thread::running, time);
+                    if (ret == 0) {
+                        _thread::running->setSleeping(true);
+                    }
+                }
+                break;
+            }
         }
         _thread::timeSliceCounter = 0;
         _thread::dispatch();

@@ -48,6 +48,18 @@ Thread::Thread() {
     thread_create(&myHandle, wrapper, this);//create thread za run funkciju, a za run neki wrapper izvan klase?
 }
 
+void periodic_init(void* thread, time_t time) {
+    if(thread != nullptr){
+        set_period(&((Thread*)thread)->myHandle, time);
+    }
+}
+
+void sleep_periodic(void* thread){
+    if(thread != nullptr){
+        sleep_periodic_thread(&((Thread*)thread)->myHandle);
+    }
+}
+
 Semaphore::Semaphore(unsigned int init) {
     sem_open(&myHandle, init);
 }
