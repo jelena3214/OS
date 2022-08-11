@@ -6,6 +6,8 @@
 #include "../h/_console.hpp"
 
 //TODO Da li je potrebno mutex 2 puta? Jer samo jedna nit stavlja i jedna uzima
+//DA ZATO STO NPR BAFER ZA ISPIS, JEDNA NIT MOZE AKTIVNO DA STAVLJA U TAJ BAFER(ZELI DA PRINTUJE) I ONA CE SE BLOKIRATI SAMO NA MUTEX JDNOM
+//DOK KONTROLER NE MORA DA CEKA DA BI UZEO IZ TOG BUFFERA
 
 void kbuffer::put(int val) {
     spaceAvailable->wait();
