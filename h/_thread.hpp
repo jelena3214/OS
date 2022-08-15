@@ -26,6 +26,8 @@ public:
 
     void setMain(bool value) { isMain = value; }
 
+    void setBlocked(bool value) { blocked = value; }
+
     uint64 getTimeSlice() const { return timeSlice; }
 
     using Body = void (*)(void*);
@@ -61,7 +63,7 @@ private:
     Context context;
     uint64 timeSlice; //broj perioda koji dobija neka nit svaki put kad joj se da procesor
     bool finished, sleeping;
-    bool isMain;
+    bool isMain, blocked;
     time_t time; //perioda za periodicne niti
 
     void* arg;

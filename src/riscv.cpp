@@ -58,7 +58,8 @@ void Riscv::handleSupervisorTrap(){
                 break;
             }
             case 0x13:{
-                //da li treba raditi dispatch kad ce se svakako desiti na kraju?????
+                _thread::timeSliceCounter = 0;
+                _thread::dispatch();
                 break;
             }
             case 0x12: {
@@ -77,8 +78,6 @@ void Riscv::handleSupervisorTrap(){
             }
             case 0x26:
             {
-                __asm__ volatile ("mv x10, %0" : : "r"(1));
-                __asm__ volatile("sd x10, 80(fp)");
                 sstatus &= ~(1 << 8); //clear spp
                 sstatus |= (1 << 5); //set spie
 
@@ -98,6 +97,8 @@ void Riscv::handleSupervisorTrap(){
                 if(time < 0)ret = -1; //error
                 __asm__ volatile ("mv x10, %0" : : "r"(ret));
                 __asm__ volatile("sd x10, 80(fp)");
+                _thread::timeSliceCounter = 0; //odmah menja na drugu nit
+                _thread::dispatch();
                 break;
             }
             case 0x21:{
@@ -175,9 +176,8 @@ void Riscv::handleSupervisorTrap(){
                 break;
             }
         }
-        _thread::timeSliceCounter = 0;
-        _thread::dispatch();
-
+        //_thread::timeSliceCounter = 0;
+        //_thread::dispatch();
         Riscv::w_sstatus(sstatus);
         Riscv::w_sepc(sepc);
     } else if (scause == 0x8000000000000001UL)

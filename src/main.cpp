@@ -26,15 +26,8 @@ public:
 
 };
 
-void* userMa(void* p){
-    Moja* m = new Moja(2);
-    m->start();
-    while(1){}
-    return p;
-}
-
 void* mainWrapper(void* p){
-    userRegime();
+    //userRegime();
     userMain();
     return p;
 }
@@ -48,7 +41,7 @@ int main() {
 
 
     MemoryAllocator& mem = MemoryAllocator::getInstance();
-    _thread* userM = _thread::createThread(reinterpret_cast<void (*)(void*)>(mainWrapper),
+    _thread* userM = _thread::createThread(reinterpret_cast<void (*)(void*)>(userMain),
                                               static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
                                            nullptr);
     _thread* idleT = _thread::createThread(reinterpret_cast<void (*)(void *)>(idle), static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
@@ -64,9 +57,9 @@ int main() {
     userM->startThread();
     inputT->startThread();
 
+
     _thread::running = mainT;
     mainT->setMain(true);
-
     //omogucavamo prekide
     Riscv::ms_sie(Riscv::SIE_SEIE);
     Riscv::ms_sie(Riscv::SIE_SSIE);
@@ -78,9 +71,11 @@ int main() {
     _console* console = _console::getInstance();
     while(!console->inEmpty()); //OBEZBEDI DA SE SVE ISPISE PRE KRAJA
     while(!console->outEmpty()); //OBEZBEDI DA SE SVE upise PRE KRAJA
+
     userM->~_thread();
     //OVAJ DEO MORA DA BI SE LEPO ZAVRSIO KERNEL DA NE PRIHVATA PREKIDE I SLICNO, jer tajmer
     mainT->setFinished(true);
+
     Riscv::mc_sie(Riscv::SIE_SEIE);
     Riscv::mc_sie(Riscv::SIE_SSIE);
     Riscv::w_sip(0);

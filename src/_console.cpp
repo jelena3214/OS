@@ -3,6 +3,7 @@
 //
 
 #include "../h/_console.hpp"
+#include "../h/syscall_c.hpp"
 
 _console* _console::instance = nullptr;
 
@@ -14,6 +15,7 @@ void *_console::printingThread(void *p) {
             volatile uint64* const reg = (volatile uint64 *const)CONSOLE_TX_DATA;
             *reg = c;
         }
+        thread_dispatch();
     }
 }
 

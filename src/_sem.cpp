@@ -3,6 +3,7 @@
 //
 
 #include "../h/_sem.hpp"
+#include "../h/syscall_c.hpp"
 
 _sem *_sem::create_semaphore(int v) {
     MemoryAllocator& mem = MemoryAllocator::getInstance();
@@ -21,10 +22,8 @@ int _sem::wait() {
     _thread* old = _thread::running;
     if(--val < 0){
         threadQueue.insertNode(old);
-        _thread* newT = _thread::running = Scheduler::get();
-        if(old != newT){
-            _thread::contextSwitch(&old->context, &newT->context);
-        }
+        old->setBlocked(true);
+        thread_dispatch();
     }
     return 0; //success
 }
@@ -33,7 +32,10 @@ int _sem::signal() {
     if(done)return -1;
     if(++val <= 0){
         _thread* th  = threadQueue.deleteNode();
-        if(!th->isFinished())Scheduler::put(th);
+        if(!th->isFinished()){
+            th->setBlocked(false);
+            Scheduler::put(th);
+        }
     }
     return 0; //success
 }
