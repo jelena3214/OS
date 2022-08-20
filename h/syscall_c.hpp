@@ -6,7 +6,6 @@
 #define PROJECT_BASE_SYSCALL_C_HPP
 
 #include "../lib/hw.h"
-#include "../lib/mem.h"
 
 void *mem_alloc(size_t size);
 
