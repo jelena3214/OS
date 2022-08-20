@@ -10,48 +10,51 @@
 
 extern void userMain();
 
-void* idle(void* p){
-    while(1){
+void *idle(void *p) {
+    while (1) {
         thread_dispatch();
     }
 }
 
-class Moja: public PeriodicThread{
+class Moja : public PeriodicThread {
 public:
-    Moja(time_t v): PeriodicThread(v){};
+    Moja(time_t v) : PeriodicThread(v) {};
 
-    void periodicActivation() override{
+    void periodicActivation() override {
         putc('j');
     }
 
 };
 
-void* mainWrapper(void* p){
+void *mainWrapper(void *p) {
     //userRegime();
     userMain();
     return p;
 }
 
 int main() {
+    //onemogucavanje prekida
     Riscv::ms_sstatus(Riscv::SSTATUS_SIE);
     Riscv::mc_sie(Riscv::SIE_SEIE);
     Riscv::mc_sie(Riscv::SIE_SSIE);
-    Riscv::w_sip(0);
+    Riscv::w_sip(0); //nema aktivnih prekida
     Riscv::w_stvec(reinterpret_cast<uint64>(&Riscv::supervisorTrap)); //init za adresu prekidne rutine
 
 
-    MemoryAllocator& mem = MemoryAllocator::getInstance();
-    _thread* userM = _thread::createThread(reinterpret_cast<void (*)(void*)>(userMain),
-                                              static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
+    MemoryAllocator &mem = MemoryAllocator::getInstance();
+    _thread *userM = _thread::createThread(reinterpret_cast<void (*)(void *)>(userMain),
+                                           static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
                                            nullptr);
-    _thread* idleT = _thread::createThread(reinterpret_cast<void (*)(void *)>(idle), static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
+    _thread *idleT = _thread::createThread(reinterpret_cast<void (*)(void *)>(idle),
+                                           static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
                                            nullptr);
-    _thread* mainT = _thread::createThread(nullptr, nullptr, nullptr);
+    _thread *mainT = _thread::createThread(nullptr, nullptr, nullptr);
 
-    _thread* inputT = _thread::createThread(reinterpret_cast<void (*)(void *)>(_console::printingThread), static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
+    _thread *inputT = _thread::createThread(reinterpret_cast<void (*)(void *)>(_console::printingThread),
+                                            static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
                                             nullptr);
 
-    //idle je potreban da postoji uvek neka nit u scheduleru spremna
+    //idle je potreban da postoji bar kao jedina nit u scheduleru spremna
     idleT->startThread();
     mainT->startThread();
     userM->startThread();
@@ -60,22 +63,23 @@ int main() {
 
     _thread::running = mainT;
     mainT->setMain(true);
+
     //omogucavamo prekide
     Riscv::ms_sie(Riscv::SIE_SEIE);
     Riscv::ms_sie(Riscv::SIE_SSIE);
 
-    while(!userM->isFinished()){
+    while (!userM->isFinished()) {
         thread_dispatch();
     }
 
-    _console* console = _console::getInstance();
-    while(!console->inEmpty()); //OBEZBEDI DA SE SVE ISPISE PRE KRAJA
-    while(!console->outEmpty()); //OBEZBEDI DA SE SVE upise PRE KRAJA
+    _console *console = _console::getInstance();
+    while (!console->inEmpty()); //uposleno cekanje dok se sve ne ispise na konzolu
+    while (!console->outEmpty()); //uposleno cekanje dok se isprazni izlazni bafer
 
     userM->~_thread();
-    //OVAJ DEO MORA DA BI SE LEPO ZAVRSIO KERNEL DA NE PRIHVATA PREKIDE I SLICNO, jer tajmer
     mainT->setFinished(true);
 
+    //gasenje prekida u supervised modu
     Riscv::mc_sie(Riscv::SIE_SEIE);
     Riscv::mc_sie(Riscv::SIE_SSIE);
     Riscv::w_sip(0);

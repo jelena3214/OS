@@ -4,6 +4,7 @@
 
 #ifndef PROJECT_BASE_SCHEDULER_HPP
 #define PROJECT_BASE_SCHEDULER_HPP
+
 #include "LinkedList.hpp"
 
 class _thread;

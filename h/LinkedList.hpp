@@ -4,24 +4,25 @@
 
 #ifndef PROJECT_BASE_LINKEDLIST_HPP
 #define PROJECT_BASE_LINKEDLIST_HPP
+
 #include "../h/MemoryAllocator.hpp"
 
 class _thread;
+
 class Node {
 public:
-    _thread* data;
-    Node* next;
+    _thread *data;
+    Node *next;
 };
 
 class LinkedList {
-    Node* head;
+    Node *head;
 public:
-    // Default constructor
-    LinkedList() { head = nullptr;}
+    LinkedList() { head = nullptr; }
 
-    void insertNode(_thread* data);
+    void insertNode(_thread *data);
 
-    _thread* deleteNode();
+    _thread *deleteNode();
 
     friend class _sem;
 };

@@ -2,17 +2,18 @@
 // Created by os on 7/2/22.
 //
 
-#ifndef PROJECT_BASE_KBUFFER_HPP
-#define PROJECT_BASE_KBUFFER_HPP
+#ifndef PROJECT_BASE__BUFFER_HPP
+#define PROJECT_BASE__BUFFER_HPP
+
 #include "_sem.hpp"
 #include "MemoryAllocator.hpp"
 
-class kbuffer {
+class _buffer {
 public:
 
-    static kbuffer* create_buffer(int capa = BUFFER_SIZE){
-        MemoryAllocator& mem = MemoryAllocator::getInstance();
-        kbuffer* newBuffer = static_cast<kbuffer *>(mem.allocate(sizeof(kbuffer)));
+    static _buffer *create_buffer(int capa = BUFFER_SIZE) {
+        MemoryAllocator &mem = MemoryAllocator::getInstance();
+        _buffer *newBuffer = static_cast<_buffer *>(mem.allocate(sizeof(_buffer)));
         newBuffer->buffer = static_cast<int *>(mem.allocate(sizeof(int) * capa));
         newBuffer->head = newBuffer->tail = 0;
         newBuffer->cap = capa;
@@ -24,10 +25,12 @@ public:
     }
 
     void put(int val);
-    int get();
-    ~kbuffer();
 
-    bool empty(){
+    int get();
+
+    ~_buffer();
+
+    bool empty() {
         return head == tail;
     }
 
@@ -35,9 +38,9 @@ public:
 private:
 
     int cap, head, tail;
-    int* buffer;
-    _sem* mutexHead, *mutexTail, *itemAvailable, *spaceAvailable;
+    int *buffer;
+    _sem *mutexHead, *mutexTail, *itemAvailable, *spaceAvailable;
 };
 
 
-#endif //PROJECT_BASE_KBUFFER_HPP
+#endif //PROJECT_BASE__BUFFER_HPP

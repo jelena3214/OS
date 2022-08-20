@@ -2,20 +2,25 @@
 // Created by os on 5/23/22.
 //
 #include "../h/syscall_cpp.hpp"
-void* operator new (size_t y){
+
+void *operator new(size_t y) {
     return mem_alloc(y);
 }
 
-void operator delete (void* y) noexcept{
-    mem_free(y);
+void operator delete(void *y)
+
+noexcept{
+mem_free(y);
 }
 
-void *operator new[](size_t n){
+void *operator new[](size_t n) {
     return mem_alloc(n);
 }
 
-void operator delete[](void *p) noexcept{
-    mem_free(p);
+void operator delete[](void *p)
+
+noexcept{
+mem_free(p);
 }
 
 Thread::Thread(void (*body)(void *), void *arg) {
@@ -38,9 +43,9 @@ int Thread::sleep(time_t t) {
     return time_sleep(t);
 }
 
-void wrapper(void* thread){
-    if(thread != nullptr){
-        ((Thread*)thread)->run();
+void wrapper(void *thread) {
+    if (thread != nullptr) {
+        ((Thread *) thread)->run();
     }
 }
 
@@ -48,15 +53,15 @@ Thread::Thread() {
     thread_init_handle(&myHandle, wrapper, this);//create thread za run funkciju, a za run neki wrapper izvan klase
 }
 
-void periodic_init(void* thread, time_t time) {
-    if(thread != nullptr){
-        set_period(&((Thread*)thread)->myHandle, time);
+void periodic_init(void *thread, time_t time) {
+    if (thread != nullptr) {
+        set_period(&((Thread *) thread)->myHandle, time);
     }
 }
 
-void sleep_periodic(void* thread){
-    if(thread != nullptr){
-        sleep_periodic_thread(&((Thread*)thread)->myHandle);
+void sleep_periodic(void *thread) {
+    if (thread != nullptr) {
+        sleep_periodic_thread(&((Thread *) thread)->myHandle);
     }
 }
 

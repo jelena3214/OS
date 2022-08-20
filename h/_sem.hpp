@@ -14,18 +14,20 @@ private:
 
     bool done;
 public:
-    _sem(int val){
+    _sem(int val) {
         this->val = val;
     }
 
-    static _sem* create_semaphore(int v);
+    static _sem *create_semaphore(int v);
 
     int wait();
+
     int signal();
+
     int close();
 
-    ~_sem(){
-        MemoryAllocator& mem = MemoryAllocator::getInstance();
+    ~_sem() {
+        MemoryAllocator &mem = MemoryAllocator::getInstance();
         mem.deallocate(this);
     }
 };

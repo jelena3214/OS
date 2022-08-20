@@ -6,44 +6,44 @@
 
 //size neka bude u bajtovima
 void *MemoryAllocator::allocate(size_t size) {
-    size_t blockNum = (size + headerSize)/MEM_BLOCK_SIZE + ((size + headerSize)%MEM_BLOCK_SIZE == 0?0:1);
+    size_t blockNum = (size + headerSize) / MEM_BLOCK_SIZE + ((size + headerSize) % MEM_BLOCK_SIZE == 0 ? 0 : 1);
 
-    if(freeMemHead == nullptr){
-        return nullptr; //no free space anymore
+    if (freeMemHead == nullptr) {
+        return nullptr; //nema slobodnog prostora
     }
 
-    for(Block* cur = freeMemHead; cur != nullptr; cur = cur->next){
+    for (Block *cur = freeMemHead; cur != nullptr; cur = cur->next) {
 
-        if(cur->numOfBlocks >= blockNum){
+        if (cur->numOfBlocks >= blockNum) {
             size_t execBlocks = cur->numOfBlocks - blockNum;
 
-            if(execBlocks){
-                Block* newFragment = (Block*)((char*)cur+blockNum*MEM_BLOCK_SIZE);
-                if(cur->prev)cur->prev->next = newFragment;
+            if (execBlocks) {
+                Block *newFragment = (Block *) ((char *) cur + blockNum * MEM_BLOCK_SIZE);
+                if (cur->prev)cur->prev->next = newFragment;
                 else freeMemHead = newFragment;
-                if(cur->next)cur->next->prev = newFragment;
+                if (cur->next)cur->next->prev = newFragment;
                 newFragment->prev = cur->prev;
                 newFragment->next = cur->next;
                 newFragment->numOfBlocks = execBlocks;
-            }else{
-                if(cur->prev)cur->prev->next = cur->next;
+            } else {
+                if (cur->prev)cur->prev->next = cur->next;
                 else freeMemHead = cur->next;
-                if(cur->next)cur->next->prev = cur->prev;
+                if (cur->next)cur->next->prev = cur->prev;
             }
-            Block* newMemBlock = (Block*)(cur);
+            Block *newMemBlock = (Block *) (cur);
             newMemBlock->numOfBlocks = blockNum;
-            if(allocatedMemHead){
-                Block* p = allocatedMemHead;
-                for( ;p->next && (char*)p->next < (char*)newMemBlock; p = p->next);
+            if (allocatedMemHead) {
+                Block *p = allocatedMemHead;
+                for (; p->next && (char *) p->next < (char *) newMemBlock; p = p->next);
                 newMemBlock->next = p->next;
                 newMemBlock->prev = p;
-                if(p->next)p->next->prev = newMemBlock;
+                if (p->next)p->next->prev = newMemBlock;
                 p->next = newMemBlock;
-            }else {
+            } else {
                 allocatedMemHead = newMemBlock;
                 allocatedMemHead->prev = allocatedMemHead->next = nullptr;
             }
-            return (void*)((char*)newMemBlock + headerSize);
+            return (void *) ((char *) newMemBlock + headerSize);
         }
     }
 
@@ -52,14 +52,14 @@ void *MemoryAllocator::allocate(size_t size) {
 
 
 void MemoryAllocator::updateMemBlocks(void *del) {
-    Block* block = (Block*)del;
-    if(allocatedMemHead == block){
+    Block *block = (Block *) del;
+    if (allocatedMemHead == block) {
         allocatedMemHead = block->next;
     }
-    if(block->next != nullptr){
+    if (block->next != nullptr) {
         block->next->prev = block->prev;
     }
-    if(block->prev != nullptr){
+    if (block->prev != nullptr) {
         block->prev->next = block->next;
     }
 }
@@ -67,8 +67,8 @@ void MemoryAllocator::updateMemBlocks(void *del) {
 
 void MemoryAllocator::ispisAlloc() {
     //printString("ISPIS ALOC\n");
-    Block* cur = nullptr;
-    for(cur = allocatedMemHead; cur; cur = cur->next){
+    Block *cur = nullptr;
+    for (cur = allocatedMemHead; cur; cur = cur->next) {
         //printInteger(cur->numOfBlocks);
         //__putc('\n');
     }
@@ -76,32 +76,33 @@ void MemoryAllocator::ispisAlloc() {
 
 void MemoryAllocator::ispisFree() {
     //printString("ISPIS FRE\n");
-    Block* cur = nullptr;
-    for(cur = freeMemHead; cur; cur = cur->next){
+    Block *cur = nullptr;
+    for (cur = freeMemHead; cur; cur = cur->next) {
         //printInteger(cur->numOfBlocks);
         //__putc('\n');
     }
 }
 
 int MemoryAllocator::deallocate(void *block) {
-    Block* cur = nullptr;
-    size_t startAddr = (size_t)HEAP_START_ADDR;
-    if(!allocatedMemHead || ((size_t)block-headerSize < startAddr || (size_t)block - headerSize > (size_t)HEAP_END_ADDR) ){
+    Block *cur = nullptr;
+    size_t startAddr = (size_t) HEAP_START_ADDR;
+    if (!allocatedMemHead ||
+        ((size_t) block - headerSize < startAddr || (size_t) block - headerSize > (size_t) HEAP_END_ADDR)) {
         return -1; // adresa ne pripada opsegu za alokaciju
     }
-    if(!freeMemHead || (char*)block - headerSize < (char*)freeMemHead){
+    if (!freeMemHead || (char *) block - headerSize < (char *) freeMemHead) {
         cur = 0;
-    }else{
-        for(cur = freeMemHead; cur->next && (char*)block - headerSize > (char*)cur->next; cur = cur->next);
+    } else {
+        for (cur = freeMemHead; cur->next && (char *) block - headerSize > (char *) cur->next; cur = cur->next);
     }
-    updateMemBlocks((char*)block - headerSize);
+    updateMemBlocks((char *) block - headerSize);
 
-    Block* newSeg = (Block*)((char*)block - headerSize);
+    Block *newSeg = (Block *) ((char *) block - headerSize);
     newSeg->prev = cur;
-    if(cur)newSeg->next = cur->next;
+    if (cur)newSeg->next = cur->next;
     else newSeg->next = freeMemHead;
-    if(newSeg->next)newSeg->next->prev = newSeg;
-    if(cur)cur->next = newSeg;
+    if (newSeg->next)newSeg->next->prev = newSeg;
+    if (cur)cur->next = newSeg;
     else freeMemHead = newSeg;
 
     tryToJoin(newSeg);
@@ -110,13 +111,13 @@ int MemoryAllocator::deallocate(void *block) {
 }
 
 int MemoryAllocator::tryToJoin(Block *cur) {
-    if(!cur)return 0;
-    if(cur->next && (char*)cur + cur->numOfBlocks*MEM_BLOCK_SIZE == (char*)cur->next){
+    if (!cur)return 0;
+    if (cur->next && (char *) cur + cur->numOfBlocks * MEM_BLOCK_SIZE == (char *) cur->next) {
         cur->numOfBlocks += cur->next->numOfBlocks;
         cur->next = cur->next->next;
-        if(cur->next)cur->next->prev = cur;
+        if (cur->next)cur->next->prev = cur;
         return 1;
-    }else{
+    } else {
         return 0;
     }
 

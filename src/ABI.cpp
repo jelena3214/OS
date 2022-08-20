@@ -4,7 +4,7 @@
 
 #include "../h/ABI.hpp"
 
-void* syscall_handler(struct FunctionParameters params){
+void *syscall_handler(struct FunctionParameters params) {
     //stavljanje parametara u registre u a0..a7
     volatile uint64 c1 = params.code;
     volatile uint64 c2 = reinterpret_cast<uint64>(params.first);

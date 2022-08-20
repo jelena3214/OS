@@ -7,53 +7,76 @@
 
 #include "../h/syscall_c.hpp"
 
-//ZASTO NECE SA ::
-void* operator new (size_t y);
+void *operator new(size_t y);
+
 void *operator new[](size_t n);
-void operator delete (void* y) noexcept;
-void operator delete[](void *p) noexcept;
 
-void wrapper(void* thread);
-void periodic_init(void* thread, time_t time);
-void sleep_periodic(void* thread);
+void operator delete(void *y)
 
-//JE L SMEM DODATI DA JE FRIEND AKO NE SMEM DOPUNJAVATI KLASU POLJIMA I FUNKCIJAMA?
+noexcept;
+
+void operator delete[](void *p)
+
+noexcept;
+
+void wrapper(void *thread);
+
+void periodic_init(void *thread, time_t time);
+
+void sleep_periodic(void *thread);
+
+
 class Thread {
 public:
-        Thread (void (*body)(void*), void* arg);
-        virtual ~Thread ();
-        int start ();
-        static void dispatch ();
-        static int sleep (time_t);
-        friend void wrapper(void* thread);
-        friend void periodic_init(void* thread, time_t time);
-        friend void sleep_periodic(void* thread);
+    Thread(void (*body)(void *), void *arg);
+
+    virtual ~Thread();
+
+    int start();
+
+    static void dispatch();
+
+    static int sleep(time_t);
+
+    friend void wrapper(void *thread);
+
+    friend void periodic_init(void *thread, time_t time);
+
+    friend void sleep_periodic(void *thread);
+
 protected:
-        Thread (); //konstuktor za prosirivanje klase on treba run da posalje u thread_create
-        virtual void run () {}
+    Thread(); //konstuktor za prosirivanje klase on treba run da posalje u thread_create
+    virtual void run() {}
+
 private:
-        thread_t myHandle;
+    thread_t myHandle;
 };
 
 class Semaphore {
 public:
-        Semaphore (unsigned init = 1);
-        virtual ~Semaphore ();
-        int wait ();
-        int signal ();
+    Semaphore(unsigned init = 1);
+
+    virtual ~Semaphore();
+
+    int wait();
+
+    int signal();
+
 private:
-        sem_t myHandle;
+    sem_t myHandle;
 };
 
 class PeriodicThread : public Thread {
 protected:
-        PeriodicThread (time_t period):Thread(){
-            periodic_init(this, period);
-        }
-        virtual void periodicActivation () {}
+    PeriodicThread(time_t period) : Thread() {
+        periodic_init(this, period);
+    }
+
+    virtual void periodicActivation() {}
+
 private:
-    void run() override{
-        while(1){
+    void run() override {
+        while (1) {
             periodicActivation();
             sleep_periodic(this); //jos jedna friend
         }
@@ -61,9 +84,10 @@ private:
 };
 
 class Console {
-        public:
-        static char getc ();
-        static void putc (char);
+public:
+    static char getc();
+
+    static void putc(char);
 };
 
 #endif //PROJECT_BASE_SYSCALL_CPP_HPP

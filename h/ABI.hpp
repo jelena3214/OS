@@ -7,16 +7,16 @@
 
 #include "../h/riscv.hpp"
 
-using Function = void (*)(void*);
+using Function = void (*)(void *);
 
-struct FunctionParameters{
+struct FunctionParameters {
     uint64 code;
-    void* first;
+    void *first;
     Function second; //na ovaj nacin prenosimo funkciju za nit
-    void* third;
-    void* fourth;
+    void *third;
+    void *fourth;
 };
 
-void* syscall_handler(struct FunctionParameters params);
+void *syscall_handler(struct FunctionParameters params);
 
 #endif //PROJECT_BASE_ABI_HPP

@@ -13,8 +13,8 @@ class _thread {
 public:
     ~_thread() {
         this->finished = true;
-        MemoryAllocator& mem = MemoryAllocator::getInstance();
-        if(stack)deallocateStack();
+        MemoryAllocator &mem = MemoryAllocator::getInstance();
+        if (stack)deallocateStack();
         mem.deallocate(this);
     }
 
@@ -30,18 +30,16 @@ public:
 
     uint64 getTimeSlice() const { return timeSlice; }
 
-    using Body = void (*)(void*);
+    using Body = void (*)(void *);
 
-    static _thread *createThread(Body body, uint64* stackAddr, void* ar);
+    static _thread *createThread(Body body, uint64 *stackAddr, void *ar);
 
     void set_time(time_t time);
 
-    static void yield();
-
     static _thread *running;
 
-    int startThread(){
-        if(body != nullptr){
+    int startThread() {
+        if (body != nullptr) {
             Scheduler::put(this);
             return 1;
         }
@@ -52,8 +50,7 @@ public:
 private:
     void deallocateStack();
 
-    struct Context
-    {
+    struct Context {
         uint64 ra;
         uint64 sp;
     };
@@ -66,10 +63,12 @@ private:
     bool isMain, blocked;
     time_t time; //perioda za periodicne niti
 
-    void* arg;
+    void *arg;
 
     friend class Riscv;
+
     friend class _sem;
+
     friend class _console;
 
     static void threadWrapper();
@@ -80,8 +79,10 @@ private:
 
     static uint64 timeSliceCounter;
 
-    static uint64 constexpr STACK_SIZE = DEFAULT_STACK_SIZE;
-    static uint64 constexpr TIME_SLICE = DEFAULT_TIME_SLICE;
+    static uint64 constexpr
+    STACK_SIZE = DEFAULT_STACK_SIZE;
+    static uint64 constexpr
+    TIME_SLICE = DEFAULT_TIME_SLICE;
 
 };
 
