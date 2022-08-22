@@ -36,6 +36,7 @@ public:
 
     static const int BUFFER_SIZE = 1024;
 private:
+    _buffer() {}
 
     int cap, head, tail;
     int *buffer;

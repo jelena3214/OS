@@ -62,13 +62,12 @@ int main() {
 
 
     _thread::running = mainT;
-    mainT->setMain(true);
 
-    //omogucavamo prekide
+    //omogucavamo prekide u supervised modu
     Riscv::ms_sie(Riscv::SIE_SEIE);
     Riscv::ms_sie(Riscv::SIE_SSIE);
 
-    while (!userM->isFinished()) {
+    while (!userM->isFinished()) { //uposleno cekanje da userMain nit zavrsi
         thread_dispatch();
     }
 
@@ -76,12 +75,19 @@ int main() {
     while (!console->inEmpty()); //uposleno cekanje dok se sve ne ispise na konzolu
     while (!console->outEmpty()); //uposleno cekanje dok se isprazni izlazni bafer
 
-    userM->~_thread();
-    mainT->setFinished(true);
-
     //gasenje prekida u supervised modu
     Riscv::mc_sie(Riscv::SIE_SEIE);
     Riscv::mc_sie(Riscv::SIE_SSIE);
     Riscv::w_sip(0);
+
+    //ciscenje pre kraja
+    userM->~_thread();
+    inputT->setFinished(true);
+    inputT->~_thread();
+    idleT->setFinished(true);
+    idleT->~_thread();
+    mainT->setFinished(true);
+    mainT->~_thread();
+
     return 0;
 }

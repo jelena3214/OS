@@ -65,24 +65,6 @@ void MemoryAllocator::updateMemBlocks(void *del) {
 }
 
 
-void MemoryAllocator::ispisAlloc() {
-    //printString("ISPIS ALOC\n");
-    Block *cur = nullptr;
-    for (cur = allocatedMemHead; cur; cur = cur->next) {
-        //printInteger(cur->numOfBlocks);
-        //__putc('\n');
-    }
-}
-
-void MemoryAllocator::ispisFree() {
-    //printString("ISPIS FRE\n");
-    Block *cur = nullptr;
-    for (cur = freeMemHead; cur; cur = cur->next) {
-        //printInteger(cur->numOfBlocks);
-        //__putc('\n');
-    }
-}
-
 int MemoryAllocator::deallocate(void *block) {
     Block *cur = nullptr;
     size_t startAddr = (size_t) HEAP_START_ADDR;
@@ -110,6 +92,7 @@ int MemoryAllocator::deallocate(void *block) {
     return 0; //success
 }
 
+//spajanje susednih dealociranih blokova
 int MemoryAllocator::tryToJoin(Block *cur) {
     if (!cur)return 0;
     if (cur->next && (char *) cur + cur->numOfBlocks * MEM_BLOCK_SIZE == (char *) cur->next) {

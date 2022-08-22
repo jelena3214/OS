@@ -24,8 +24,6 @@ public:
 
     void setSleeping(bool value) { sleeping = value; }
 
-    void setMain(bool value) { isMain = value; }
-
     void setBlocked(bool value) { blocked = value; }
 
     uint64 getTimeSlice() const { return timeSlice; }
@@ -48,6 +46,9 @@ public:
 
     static SleepList sleepQueue;
 private:
+    _thread() {};
+
+
     void deallocateStack();
 
     struct Context {
@@ -60,7 +61,7 @@ private:
     Context context;
     uint64 timeSlice; //broj perioda koji dobija neka nit svaki put kad joj se da procesor
     bool finished, sleeping;
-    bool isMain, blocked;
+    bool blocked; //da li je nit blokirana na nekom semaforu
     time_t time; //perioda za periodicne niti
 
     void *arg;

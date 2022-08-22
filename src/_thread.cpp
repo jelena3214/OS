@@ -14,18 +14,18 @@ SleepList _thread::sleepQueue;
 
 void _thread::dispatch() {
     _thread *old = running;
-    if (!old->isFinished() && !old->sleeping && !old->blocked) {
+    if (!old->finished && !old->sleeping && !old->blocked) {
         Scheduler::put(old);
     }
 
-    _thread *newT = Scheduler::get();
+    running = Scheduler::get();
 
     //provera za svaki slucaj
-    if ((newT->isMain && newT->finished) || newT->finished || newT->sleeping || newT->blocked) {
+    /*if ((newT->isMain && newT->finished) || newT->finished || newT->sleeping || newT->blocked) {
         running = Scheduler::get();
     } else {
         running = newT;
-    }
+    }*/
     _thread::contextSwitch(&old->context, &running->context);
 }
 
@@ -55,7 +55,6 @@ _thread *_thread::createThread(_thread::Body body, uint64 *stackAddr, void *ar) 
     newThread->timeSlice = TIME_SLICE;
     newThread->finished = false;
     newThread->arg = ar;
-    newThread->isMain = false;
     newThread->sleeping = false;
     newThread->blocked = false;
     return newThread;

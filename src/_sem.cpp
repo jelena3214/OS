@@ -24,7 +24,7 @@ int _sem::wait() {
         threadQueue.insertNode(old);
         old->setBlocked(true);
         thread_dispatch();
-        if(done)return -1;
+        if (done)return -1;
     }
     return 0; //uspeh
 }

@@ -32,9 +32,6 @@ private:
     int tryToJoin(Block *cur);
 
 public:
-    void ispisAlloc();
-
-    void ispisFree();
 
     static MemoryAllocator &getInstance() {
         static MemoryAllocator instance;

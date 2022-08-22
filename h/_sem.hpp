@@ -12,11 +12,13 @@ private:
     int val;
     LinkedList threadQueue;
 
-    bool done;
-public:
+    volatile bool done;
+
     _sem(int val) {
         this->val = val;
     }
+
+public:
 
     static _sem *create_semaphore(int v);
 

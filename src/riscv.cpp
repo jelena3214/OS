@@ -175,8 +175,10 @@ void Riscv::handleSupervisorTrap() {
                 break;
             }
         }
+        //kada bi svaki sistemski poziv izazvao promenu konteksta
         //_thread::timeSliceCounter = 0;
         //_thread::dispatch();
+
         Riscv::w_sstatus(sstatus);
         Riscv::w_sepc(sepc);
     } else if (scause == 0x8000000000000001UL) {
@@ -192,7 +194,7 @@ void Riscv::handleSupervisorTrap() {
         }
         _thread::sleepQueue.decTime();
         while (1) {
-            _thread *unsleepTHread = _thread::sleepQueue.get();
+            _thread *unsleepTHread = _thread::sleepQueue.get(); //funkcija get stavi odblokiranu nit u red spremnih
             if (unsleepTHread == nullptr)break;
             unsleepTHread->setSleeping(false);
         }
@@ -209,8 +211,15 @@ void Riscv::handleSupervisorTrap() {
 
     } else {
         // unexpected trap cause
-        printString("\nERROR\n");
+        printString("\n");
+        printString("\nERROR CODE: ");
         printInt(scause);
+        printString("\nSEPC: ");
+        printInt(r_sepc());
+        printString("\n");
+        printString("\n");
+        _thread::running->setFinished(true);
+        _thread::dispatch();
     }
 
 }
