@@ -14,6 +14,7 @@ void _buffer::put(int val) {
     mutexTail->wait();
     buffer[tail] = val;
     tail = (tail + 1) % cap;
+    numOfElems++;
     mutexTail->signal();
     itemAvailable->signal();
 }
@@ -26,6 +27,7 @@ int _buffer::get() {
     if (r < 0) return r;
     int ret = buffer[head];
     head = (head + 1) % cap;
+    numOfElems--;
     r = mutexHead->signal();
     if (r < 0) return r;
     r = spaceAvailable->signal();
@@ -36,4 +38,5 @@ int _buffer::get() {
 _buffer::~_buffer() {
     MemoryAllocator &mem = MemoryAllocator::getInstance();
     mem.deallocate(buffer);
+    mem.deallocate(this);
 }

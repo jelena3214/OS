@@ -22,6 +22,8 @@ public:
 
     void setFinished(bool value) { finished = value; }
 
+    void setSupervised(bool value) { supervised = value; }
+
     void setSleeping(bool value) { sleeping = value; }
 
     void setBlocked(bool value) { blocked = value; }
@@ -61,7 +63,7 @@ private:
     Context context;
     uint64 timeSlice; //broj perioda koji dobija neka nit svaki put kad joj se da procesor
     bool finished, sleeping;
-    bool blocked; //da li je nit blokirana na nekom semaforu
+    bool blocked, supervised; //da li je nit blokirana na nekom semaforu, supervised oznacava da li je nit u sistemskom rezimu ili ne
     time_t time; //perioda za periodicne niti
 
     void *arg;

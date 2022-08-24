@@ -4,7 +4,7 @@
 
 #include "../h/MemoryAllocator.hpp"
 
-//size neka bude u bajtovima
+//size neka bude u bajtovima, sizeof() vraca u bajtovima vrednost
 void *MemoryAllocator::allocate(size_t size) {
     size_t blockNum = (size + headerSize) / MEM_BLOCK_SIZE + ((size + headerSize) % MEM_BLOCK_SIZE == 0 ? 0 : 1);
 
@@ -73,7 +73,7 @@ int MemoryAllocator::deallocate(void *block) {
         return -1; // adresa ne pripada opsegu za alokaciju
     }
     if (!freeMemHead || (char *) block - headerSize < (char *) freeMemHead) {
-        cur = 0;
+        cur = nullptr;
     } else {
         for (cur = freeMemHead; cur->next && (char *) block - headerSize > (char *) cur->next; cur = cur->next);
     }

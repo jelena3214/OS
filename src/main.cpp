@@ -27,8 +27,15 @@ public:
 };
 
 void *mainWrapper(void *p) {
-    //userRegime();
-    userMain();
+    int *a = new int[5];
+    for(int i = 0; i < 5; i++){
+        a[i] = 74;
+    }
+
+    for(int i = 0; i<5; i++){
+        Console::putc(a[i]);
+    }
+    delete [] a;
     return p;
 }
 
@@ -45,17 +52,20 @@ int main() {
     _thread *userM = _thread::createThread(reinterpret_cast<void (*)(void *)>(userMain),
                                            static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
                                            nullptr);
-    _thread *idleT = _thread::createThread(reinterpret_cast<void (*)(void *)>(idle),
-                                           static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
-                                           nullptr);
+    //_thread *idleT = _thread::createThread(reinterpret_cast<void (*)(void *)>(idle),
+                                           //static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
+                                           //nullptr);
     _thread *mainT = _thread::createThread(nullptr, nullptr, nullptr);
 
     _thread *inputT = _thread::createThread(reinterpret_cast<void (*)(void *)>(_console::printingThread),
                                             static_cast<uint64 *>(mem.allocate(DEFAULT_STACK_SIZE * sizeof(uint64))),
                                             nullptr);
 
+    inputT->setSupervised(true);
+    mainT->setSupervised(true);
+
     //idle je potreban da postoji bar kao jedina nit u scheduleru spremna
-    idleT->startThread();
+    //idleT->startThread();
     mainT->startThread();
     userM->startThread();
     inputT->startThread();
@@ -84,8 +94,8 @@ int main() {
     userM->~_thread();
     inputT->setFinished(true);
     inputT->~_thread();
-    idleT->setFinished(true);
-    idleT->~_thread();
+    //idleT->setFinished(true);
+    //idleT->~_thread();
     mainT->setFinished(true);
     mainT->~_thread();
 

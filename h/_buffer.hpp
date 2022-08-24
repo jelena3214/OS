@@ -21,6 +21,7 @@ public:
         newBuffer->mutexTail = _sem::create_semaphore(1);
         newBuffer->itemAvailable = _sem::create_semaphore(0);
         newBuffer->spaceAvailable = _sem::create_semaphore(capa);
+        newBuffer->numOfElems = 0;
         return newBuffer;
     }
 
@@ -31,13 +32,18 @@ public:
     ~_buffer();
 
     bool empty() {
-        return head == tail;
+        return numOfElems == 0;
+    }
+
+    bool full() {
+        return numOfElems == BUFFER_SIZE;
     }
 
     static const int BUFFER_SIZE = 1024;
 private:
     _buffer() {}
 
+    int numOfElems;
     int cap, head, tail;
     int *buffer;
     _sem *mutexHead, *mutexTail, *itemAvailable, *spaceAvailable;

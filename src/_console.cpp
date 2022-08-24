@@ -7,6 +7,7 @@
 
 _console *_console::instance = nullptr;
 
+//nit u sistemskom rezimu
 void *_console::printingThread(void *p) {
     _console *console = _console::getInstance();
     while (1) {
@@ -22,6 +23,9 @@ void *_console::printingThread(void *p) {
 void _console::console_handler() {
     _console *console = _console::getInstance();
     while (*(volatile char *) CONSOLE_STATUS & CONSOLE_RX_STATUS_BIT) {
+        if(console->outputBuffer->full()){ //ako je bafer pun kontroler ne mozemo blokirati, zbog toga treba da nastavi dalje i ostavi znake za kasnije
+            return;                         //jer nije pozeljno da blokiramo nit koja je dobila prekid
+        }
         volatile char c = *(volatile char *) (CONSOLE_RX_DATA);
         if (c == '\r')c = '\n'; //jer pritiskanjem entera prepozna samo \r karakter
         console->outputBuffer->put(c);

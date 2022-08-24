@@ -35,7 +35,9 @@ void _thread::deallocateStack() {
 }
 
 void _thread::threadWrapper() {
-    userRegime();
+    if(!running->supervised){
+        userRegime();
+    }
     running->body(running->arg);
     running->setFinished(true);
     thread_dispatch(); //kada zavrsi svoj posao nit predaje nekoj sledecoj niti u scheduleru
@@ -51,12 +53,13 @@ _thread *_thread::createThread(_thread::Body body, uint64 *stackAddr, void *ar) 
     newThread->stack = stackAddr;
     newThread->body = body;
     newThread->context.ra = (uint64) &threadWrapper;
-    newThread->context.sp = newThread->stack != nullptr ? (uint64) &newThread->stack[STACK_SIZE] : 0;
+    newThread->context.sp = newThread->stack != nullptr ? (uint64) &newThread->stack[STACK_SIZE] : 0; //sp pokazuje na poslednju zauzetu(stek raste ka nizim adr)
     newThread->timeSlice = TIME_SLICE;
     newThread->finished = false;
     newThread->arg = ar;
     newThread->sleeping = false;
     newThread->blocked = false;
+    newThread->supervised = false;
     return newThread;
 }
 

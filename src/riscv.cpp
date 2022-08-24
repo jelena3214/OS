@@ -211,13 +211,14 @@ void Riscv::handleSupervisorTrap() {
 
     } else {
         // unexpected trap cause
-        printString("\n");
-        printString("\nERROR CODE: ");
-        printInt(scause);
-        printString("\nSEPC: ");
-        printInt(r_sepc());
-        printString("\n");
-        printString("\n");
+        const char* errorMsg = "\nERROR : ";
+        _console *console = _console::getInstance();
+        for(int i = 0; errorMsg[i] != '\0'; i++){
+            console->inputBuffer->put(errorMsg[i]);
+        }
+        console->inputBuffer->put(scause + 48);
+        console->inputBuffer->put('\n');
+
         _thread::running->setFinished(true);
         _thread::dispatch();
     }
